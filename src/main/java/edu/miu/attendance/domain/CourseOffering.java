@@ -3,6 +3,8 @@ package edu.miu.attendance.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "CourseOffering")
 @Data
@@ -23,6 +25,15 @@ public class CourseOffering {
 
     @Column(name = "Room")
     private String room;
+
+    @ManyToOne
+    private Course course;
+
+    @ManyToOne
+    private Faculty faculty;
+
+    @OneToMany
+    private List<Session> sessions;
 
     @Embedded
     private AuditData auditData;

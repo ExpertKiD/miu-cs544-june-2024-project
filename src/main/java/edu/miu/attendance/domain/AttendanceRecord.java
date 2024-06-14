@@ -25,5 +25,11 @@ public class AttendanceRecord {
     @JoinColumn(name = "LocationId")
     private Location location;
 
+    @ManyToOne
+    @JoinColumn(name = "courseOfferingId")
+    private CourseOffering courseOffering;
 
+    @ManyToOne
+    @JoinColumn(name = "sessionId")
+    private Session session;
 }
