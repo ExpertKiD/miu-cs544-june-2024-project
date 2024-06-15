@@ -1,4 +1,4 @@
-package edu.miu.attendance.service.impl;
+package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Location;
 import edu.miu.attendance.dto.LocationDTO;

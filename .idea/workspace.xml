@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="65753803-11b5-4019-ba1e-1e9da256319f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/AttendanceRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/AttendanceRecord.java" afterDir="false" />
+    <list default="true" id="65753803-11b5-4019-ba1e-1e9da256319f" name="Changes" comment="Created CRUD for Location">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/AuditData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/AuditData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/CourseOffering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/CourseOffering.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/miu/attendance/domain/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/AttendanceRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/AttendanceRecord.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/AuditData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/AuditData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/CourseOffering.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/CourseOffering.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/Person.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/edu/miu/attendance/domain/Person.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +28,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="JpbToolWindowState">
+    <option name="isToolWindowVisible" value="false" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2hssCg4S5g9f5rIZlvynLvG6RmR" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -43,7 +47,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.AttendanceApplication.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "UmarBUnyaminu",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -98,5 +102,9 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Created CRUD for Location" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created CRUD for Location" />
   </component>
 </project>
