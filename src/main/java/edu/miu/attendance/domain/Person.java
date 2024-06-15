@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name="Person")
@@ -33,6 +34,14 @@ public abstract class Person {
     private String username;
     @Column(name = "password", table = "PersonAccount")
     private String password;
+
+    @Column(name = "role", table = "PersonAccount")
+    @ElementCollection
+    @CollectionTable(name = "UserRoles",
+            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")}
+    )
+    private List<String> roles;
+
     @Embedded
     private AuditData data;
 
