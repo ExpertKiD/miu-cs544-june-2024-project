@@ -10,7 +10,7 @@ spring:
 
   datasource:
     username: root
-    password: Naogaon65@
+    password: root
     url: jdbc:mysql://localhost:3306/cs544_attendance?createDatabaseIfNotExist=true
     hikari:
       maximum-pool-size: 10

@@ -25,7 +25,6 @@ public class CourseController {
     }
     @PutMapping("/courses")
     public ResponseEntity<?> updateCourse(@RequestBody CourseDTO courseDTO) {
-
         return courseService.updateCourse(courseDTO);
     }
 }
