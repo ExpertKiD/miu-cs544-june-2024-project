@@ -3,7 +3,9 @@ package edu.miu.attendance.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Student")
@@ -34,6 +36,12 @@ public class Student extends Person {
 
     @OneToMany(mappedBy = "student")
     private List<AttendanceRecord> attendanceRecords;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles = new HashSet<>();
 
 
 }

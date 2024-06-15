@@ -1,5 +1,6 @@
 package edu.miu.attendance.domain;
 
+import edu.miu.attendance.enumType.GenderType;
 import jakarta.persistence.*;
 import lombok.Data;
 

@@ -1,7 +1,9 @@
 package edu.miu.attendance.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +14,13 @@ import java.util.List;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "credits")
     private double credits;
 
-    @Column(name = "CourseDescription")
+    @Column(name = "CourseDescription",length = 500)
     private String description;
 
     @Column(name = "CourseCode")
