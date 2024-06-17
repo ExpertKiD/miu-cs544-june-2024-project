@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: UniAttendanceSystem
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    defer-datasource-initialization: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/cs544_attendance?createDatabaseIfNotExist=true
+    hikari:
+      maximum-pool-size: 10
+
+  sql:
+    init:
+      mode: never
+
+  data:
+    jdbc:
+      dialect: mysql
