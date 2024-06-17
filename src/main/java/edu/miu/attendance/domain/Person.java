@@ -35,12 +35,12 @@ public abstract class Person {
     @Column(name = "password", table = "PersonAccount")
     private String password;
 
-    @Column(name = "role", table = "PersonAccount")
-    @ElementCollection
-    @CollectionTable(name = "UserRoles",
-            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")}
-    )
-    private List<String> roles;
+//    @Column(name = "role", table = "PersonAccount")
+//    @ElementCollection
+//    @CollectionTable(name = "UserRoles",
+//            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")}
+//    )
+//    private List<String> roles;
 
     @Embedded
     private AuditData data;

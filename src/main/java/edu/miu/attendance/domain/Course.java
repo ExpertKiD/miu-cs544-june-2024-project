@@ -35,7 +35,7 @@ public class Course {
     @Embedded
     private AuditData auditData;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "CoursePrequisite",
     joinColumns = {@JoinColumn(name = "CourseId", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "PrerequisiteId", referencedColumnName = "id")}
