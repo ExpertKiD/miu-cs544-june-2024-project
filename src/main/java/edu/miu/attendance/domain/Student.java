@@ -12,13 +12,13 @@ public class Student extends Person {
     @Column(name = "Entry")
     private String entry;
 
-    @Column(name = "AlternateID")
+    @Column(name = "AlternateID", unique = true)
     private String alternateID;
 
-    @Column(name = "ApplicantID")
+    @Column(name = "ApplicantID", unique = true)
     private String applicantId;
 
-    @Column(name = "StudentID")
+    @Column(name = "StudentID", unique = true)
     private String studentId;
 
     @ManyToOne
