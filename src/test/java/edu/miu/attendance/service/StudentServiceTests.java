@@ -60,6 +60,7 @@ class StudentServiceTests {
 
     @Test
      void testSaveStudent() {
+        studentDTO.setStudentId("123456");
         StudentDTO savedStudent = studentService.addStudent(studentDTO);
 
         assertThat(savedStudent, is(notNullValue()));
