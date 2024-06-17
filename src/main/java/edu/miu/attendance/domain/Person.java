@@ -46,6 +46,6 @@ public abstract class Person {
     private Set<Roles> roles = new HashSet<>();
 
     @Embedded
-    private AuditData data;
+    private AuditData data = new AuditData();
 
 }
