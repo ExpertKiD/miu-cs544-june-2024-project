@@ -9,5 +9,4 @@ public class LocationDTO {
     private String name;
     private int capacity;
     private Long locationTypeId;
-    private AuditData auditData;
 }
