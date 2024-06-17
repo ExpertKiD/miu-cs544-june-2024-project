@@ -3,9 +3,7 @@ package edu.miu.attendance.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Student")
@@ -14,13 +12,13 @@ public class Student extends Person {
     @Column(name = "Entry")
     private String entry;
 
-    @Column(name = "AlternateID")
+    @Column(name = "AlternateID", unique = true)
     private String alternateID;
 
-    @Column(name = "ApplicantID")
+    @Column(name = "ApplicantID", unique = true)
     private String applicantId;
 
-    @Column(name = "StudentID")
+    @Column(name = "StudentID", unique = true)
     private String studentId;
 
     @ManyToOne
@@ -36,12 +34,4 @@ public class Student extends Person {
 
     @OneToMany(mappedBy = "student")
     private List<AttendanceRecord> attendanceRecords;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles = new HashSet<>();
-
-
 }
