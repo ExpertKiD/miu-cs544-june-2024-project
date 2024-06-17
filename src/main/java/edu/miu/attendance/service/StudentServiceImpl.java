@@ -6,17 +6,18 @@ import edu.miu.attendance.exception.ResourceAlreadyExistsException;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.StudentRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service()
-@AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
+    @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
     private ModelMapper modelMapper;
 
 
