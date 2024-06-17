@@ -41,4 +41,12 @@ public class Course {
             inverseJoinColumns = {@JoinColumn(name = "PrerequisiteId", referencedColumnName = "id")}
     )
     private List<Course> prerequisites = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+    }
+
 }
