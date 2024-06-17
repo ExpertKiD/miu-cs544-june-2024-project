@@ -19,5 +19,5 @@ public class Location {
     private LocationType locationType;
 
     @Embedded
-    private AuditData auditData;
+    private AuditData auditData = new AuditData();
 }
