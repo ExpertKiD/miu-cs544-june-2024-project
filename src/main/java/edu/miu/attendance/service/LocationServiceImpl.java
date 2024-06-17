@@ -7,6 +7,8 @@ import edu.miu.attendance.repository.LocationRepository;
 import edu.miu.attendance.repository.LocationTypeRepository;
 import edu.miu.attendance.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +24,9 @@ public class LocationServiceImpl implements LocationService {
     private LocationTypeRepository locationTypeRepository;
 
     @Override
-    public List<LocationDTO> getAllLocations() {
-        return locationRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .toList();
+    public Page<LocationDTO> getAllLocations(Pageable pageable) {
+        return locationRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 
     @Override
@@ -50,7 +51,6 @@ public class LocationServiceImpl implements LocationService {
         LocationType locationType = locationTypeRepository.findById(locationDTO.getLocationTypeId())
                 .orElseThrow(() -> new RuntimeException("LocationType not found"));
         location.setLocationType(locationType);
-        location.setAuditData(locationDTO.getAuditData());
         return convertToDTO(locationRepository.save(location));
     }
 
@@ -65,7 +65,6 @@ public class LocationServiceImpl implements LocationService {
         dto.setName(location.getName());
         dto.setCapacity(location.getCapacity());
         dto.setLocationTypeId(location.getLocationType().getId());
-        dto.setAuditData(location.getAuditData());
         return dto;
     }
 
@@ -76,7 +75,6 @@ public class LocationServiceImpl implements LocationService {
         LocationType locationType = locationTypeRepository.findById(dto.getLocationTypeId())
                 .orElseThrow(() -> new RuntimeException("LocationType not found"));
         location.setLocationType(locationType);
-        location.setAuditData(dto.getAuditData());
         return location;
     }
 }

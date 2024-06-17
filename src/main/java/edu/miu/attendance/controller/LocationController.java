@@ -3,6 +3,8 @@ package edu.miu.attendance.controller;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,8 @@ public class LocationController {
     private LocationService locationService;
 
     @GetMapping
-    public List<LocationDTO> getAllLocations() {
-        return locationService.getAllLocations();
+    public Page<LocationDTO> getAllLocations(Pageable pageable) {
+        return locationService.getAllLocations(pageable);
     }
 
     @GetMapping("/{id}")

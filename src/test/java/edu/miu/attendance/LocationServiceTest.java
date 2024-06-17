@@ -3,6 +3,7 @@ package edu.miu.attendance;
 import edu.miu.attendance.domain.AuditData;
 import edu.miu.attendance.domain.Location;
 import edu.miu.attendance.domain.LocationType;
+import edu.miu.attendance.domain.Student;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.repository.LocationRepository;
 import edu.miu.attendance.repository.LocationTypeRepository;
@@ -12,6 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -40,9 +45,12 @@ public class LocationServiceTest {
     @Test
     public void testGetAllLocations() {
         Location location = createLocation();
-        when(locationRepository.findAll()).thenReturn(Collections.singletonList(location));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        assertFalse(locationService.getAllLocations().isEmpty());
+        Page<Location> locationsPage = new PageImpl<>(Collections.singletonList(location));
+        when(locationRepository.findAll(pageable)).thenReturn(locationsPage);
+
+        assertFalse(locationService.getAllLocations(pageable).isEmpty());
         verify(locationRepository, times(1)).findAll();
     }
 
@@ -122,7 +130,6 @@ public class LocationServiceTest {
         auditData.setUpdatedOn(LocalDateTime.now());
         auditData.setCreatedBy("admin");
         auditData.setUpdatedBy("admin");
-        locationDTO.setAuditData(auditData);
         return locationDTO;
     }
 }
