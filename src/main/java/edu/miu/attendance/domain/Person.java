@@ -2,10 +2,13 @@ package edu.miu.attendance.domain;
 
 import edu.miu.attendance.enumType.GenderType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="Person")
@@ -18,6 +21,7 @@ import java.util.List;
 public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
     @Column(name = "firstName")
     private String firstName;
@@ -35,14 +39,13 @@ public abstract class Person {
     @Column(name = "password", table = "PersonAccount")
     private String password;
 
-//    @Column(name = "role", table = "PersonAccount")
-//    @ElementCollection
-//    @CollectionTable(name = "UserRoles",
-//            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")}
-//    )
-//    private List<String> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles = new HashSet<>();
 
     @Embedded
-    private AuditData data;
+    private AuditData data = new AuditData();
 
 }
