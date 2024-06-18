@@ -33,9 +33,9 @@ public class CourseOffering {
     @ManyToOne
     private Faculty faculty;
 
-    @OneToMany
+    @ManyToMany
     private List<Session> sessions;
 
     @Embedded
-    private AuditData auditData;
+    private AuditData auditData=new AuditData();
 }
