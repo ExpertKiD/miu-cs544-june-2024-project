@@ -34,6 +34,6 @@ public class Student extends Person {
     @OrderColumn(name = "sequence")
     private List<CourseOffering> coursesRegistrations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 }
