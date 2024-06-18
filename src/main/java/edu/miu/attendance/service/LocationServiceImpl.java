@@ -5,14 +5,11 @@ import edu.miu.attendance.domain.LocationType;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.repository.LocationRepository;
 import edu.miu.attendance.repository.LocationTypeRepository;
-import edu.miu.attendance.service.LocationService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -37,12 +34,14 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public LocationDTO createLocation(LocationDTO locationDTO) {
         Location location = convertToEntity(locationDTO);
         return convertToDTO(locationRepository.save(location));
     }
 
     @Override
+    @Transactional
     public LocationDTO updateLocation(Long id, LocationDTO locationDTO) {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Location not found"));
@@ -55,6 +54,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public void deleteLocation(Long id) {
         locationRepository.deleteById(id);
     }
