@@ -30,6 +30,7 @@ public class Student extends Person {
             inverseJoinColumns = @JoinColumn(name = "CourseOfferingId", referencedColumnName = "id"),
             joinColumns = @JoinColumn(name = "StudentId", referencedColumnName = "id")
     )
+    @OrderColumn(name = "sequence")
     private List<Course> coursesRegistrations;
 
     @OneToMany(mappedBy = "student")
