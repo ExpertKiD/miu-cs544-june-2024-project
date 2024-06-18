@@ -3,6 +3,7 @@ package edu.miu.attendance.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,8 +32,8 @@ public class Student extends Person {
             joinColumns = @JoinColumn(name = "StudentId", referencedColumnName = "id")
     )
     @OrderColumn(name = "sequence")
-    private List<Course> coursesRegistrations;
+    private List<CourseOffering> coursesRegistrations = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<AttendanceRecord> attendanceRecords;
+    private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 }
