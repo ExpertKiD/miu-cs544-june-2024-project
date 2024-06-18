@@ -2,12 +2,15 @@ package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.LocationType;
 import edu.miu.attendance.dto.LocationTypeDTO;
+import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.LocationTypeRepository;
-import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationTypeServiceImpl implements LocationTypeService {
@@ -15,52 +18,46 @@ public class LocationTypeServiceImpl implements LocationTypeService {
     @Autowired
     private LocationTypeRepository locationTypeRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public List<LocationTypeDTO> getAllLocationTypes() {
         return locationTypeRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(locationType -> modelMapper.map(locationType, LocationTypeDTO.class))
                 .toList();
     }
 
     @Override
     public LocationTypeDTO getLocationTypeById(Long id) {
-        return locationTypeRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("LocationType not found"));
+        LocationType locationType = locationTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("LocationType not found"));
+        return modelMapper.map(locationType, LocationTypeDTO.class);
     }
 
     @Override
     @Transactional
     public LocationTypeDTO createLocationType(LocationTypeDTO locationTypeDTO) {
-        LocationType locationType = convertToEntity(locationTypeDTO);
-        return convertToDTO(locationTypeRepository.save(locationType));
+        LocationType locationType = modelMapper.map(locationTypeDTO, LocationType.class);
+        locationType = locationTypeRepository.save(locationType);
+        return modelMapper.map(locationType, LocationTypeDTO.class);
     }
 
     @Override
     @Transactional
     public LocationTypeDTO updateLocationType(Long id, LocationTypeDTO locationTypeDTO) {
         LocationType locationType = locationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LocationType not found"));
-        locationType.setType(locationTypeDTO.getType());
-        return convertToDTO(locationTypeRepository.save(locationType));
+                .orElseThrow(() -> new ResourceNotFoundException("LocationType not found"));
+        modelMapper.map(locationTypeDTO, locationType);
+        locationType = locationTypeRepository.save(locationType);
+        return modelMapper.map(locationType, LocationTypeDTO.class);
     }
-
     @Override
     @Transactional
     public void deleteLocationType(Long id) {
+        if (!locationTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("LocationType not found");
+        }
         locationTypeRepository.deleteById(id);
-    }
-
-    private LocationTypeDTO convertToDTO(LocationType locationType) {
-        LocationTypeDTO dto = new LocationTypeDTO();
-        dto.setId(locationType.getId());
-        dto.setType(locationType.getType());
-        return dto;
-    }
-
-    private LocationType convertToEntity(LocationTypeDTO dto) {
-        LocationType locationType = new LocationType();
-        locationType.setType(dto.getType());
-        return locationType;
     }
 }
