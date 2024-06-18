@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumType.GenderType;
+import edu.miu.attendance.domain.enums.GenderType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="Person")
+@Table(name = "Person")
 @SecondaryTable(
-        name="PersonAccount",
+        name = "PersonAccount",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 )
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,7 +30,7 @@ public abstract class Person {
     @Enumerated(EnumType.STRING)
     @Column(name = "GenderType")
     private GenderType genderType;
-    @Column(name="birthdate")
+    @Column(name = "birthdate")
     private LocalDate birthDate;
     @Column(name = "EmailAddress")
     private String emailAddress;
@@ -39,13 +39,24 @@ public abstract class Person {
     @Column(name = "password", table = "PersonAccount")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     @Embedded
-    private AuditData data = new AuditData();
+    private AuditData auditData;
+
+    @PrePersist
+    protected void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+    }
 
 }

@@ -11,18 +11,19 @@ import java.time.LocalDateTime;
 @Embeddable
 @Data
 public class AuditData {
-    @Column(insertable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdOn;
-    @Column(insertable = false, updatable = false)
     private LocalDateTime updatedOn;
     private String updatedBy ="";
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String createdBy = "";
 
     @PrePersist
     protected void onCreate() {
         createdOn = LocalDateTime.now();
         updatedOn = LocalDateTime.now();
+        createdBy = "system";
+        updatedBy = "system";
     }
 
     @PreUpdate

@@ -2,8 +2,7 @@ package edu.miu.attendance;
 
 import edu.miu.attendance.domain.AuditData;
 import edu.miu.attendance.domain.Location;
-import edu.miu.attendance.domain.LocationType;
-import edu.miu.attendance.domain.Student;
+import edu.miu.attendance.domain.enums.LocationType;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.repository.LocationRepository;
 import edu.miu.attendance.repository.LocationTypeRepository;

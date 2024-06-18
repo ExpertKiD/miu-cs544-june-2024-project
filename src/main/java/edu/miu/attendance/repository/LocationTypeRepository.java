@@ -1,6 +1,6 @@
 package edu.miu.attendance.repository;
 
-import edu.miu.attendance.domain.LocationType;
+import edu.miu.attendance.domain.enums.LocationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

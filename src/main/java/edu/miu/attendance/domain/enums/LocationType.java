@@ -1,4 +1,4 @@
-package edu.miu.attendance.domain;
+package edu.miu.attendance.domain.enums;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

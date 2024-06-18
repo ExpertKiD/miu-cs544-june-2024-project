@@ -1,9 +1,6 @@
 package edu.miu.attendance.controller;
 
 import edu.miu.attendance.dto.CourseOfferingDto;
-import edu.miu.attendance.dto.StudentDTO;
-import edu.miu.attendance.enumType.CourseOfferingType;
-import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.service.CourseOfferingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,26 +18,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CourseOfferingControllerTest {
 
+    CourseOfferingDto courseOfferingDto;
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private CourseOfferingServiceImpl courseOfferingService;
-
-    CourseOfferingDto courseOfferingDto;
-
 
     @BeforeEach
     public void setUp() {
@@ -93,7 +84,6 @@ public class CourseOfferingControllerTest {
                 .andExpect(jsonPath("$.capacity", is(20)))
                 .andExpect(jsonPath("$.room", is("R-1")));
     }
-
 
 
     @Test
