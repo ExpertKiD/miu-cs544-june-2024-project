@@ -19,7 +19,7 @@ public class AttendanceRecordController {
     @GetMapping("/attendance-records")
     public Page<AttendanceRecordDTO> getAttendanceRecords(Principal principal, Pageable pageable) {
         String studentId = principal.getName();
-        Long studentIdAsLong = Long.valueOf(studentId);  // Convert it to Long if needed
+        Long studentIdAsLong = Long.valueOf(studentId);  // Converting it to Long if needed
         return attendanceService.getAttendanceRecordsForStudent(studentIdAsLong, pageable);
     }
 }
