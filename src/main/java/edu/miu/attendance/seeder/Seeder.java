@@ -1,43 +1,45 @@
 package edu.miu.attendance.seeder;
 
-import edu.miu.attendance.domain.Course;
-import edu.miu.attendance.domain.Location;
-import edu.miu.attendance.domain.LocationType;
-import edu.miu.attendance.repository.CourseRepository;
-import edu.miu.attendance.repository.LocationRepository;
-import edu.miu.attendance.repository.LocationTypeRepository;
+import edu.miu.attendance.domain.*;
+import edu.miu.attendance.enumeration.GenderType;
+import edu.miu.attendance.enumeration.RoleType;
+import edu.miu.attendance.repository.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("dev")
 @Transactional
 @Slf4j
+@AllArgsConstructor
 public class Seeder {
-
-    @Autowired
-    private LocationRepository locationRepository;
-
-    @Autowired
-    private LocationTypeRepository locationTypeRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
+    private final RoleRepository roleRepository;
+    private final LocationRepository locationRepository;
+    private final LocationTypeRepository locationTypeRepository;
+    private final CourseRepository courseRepository;
+    private final FacultyRepository facultyRepository;
 
 
     @PostConstruct
-    public void seedDatabase(){
+    public void seedDatabase() {
         log.info("\nSeeding to the database");
 
         log.info("Seeding Location types");
         addLocationTypes();
+
+        log.info("Seeding Roles");
+        addRoles();
 
         log.info("Seeding Locations");
         // Add Locations
@@ -45,6 +47,9 @@ public class Seeder {
 
         log.info("Seeding Courses");
         addCourses();
+
+        log.info("Seeding Faculties");
+        addFaculties();
     }
 
     private void addLocationTypes() {
@@ -98,7 +103,7 @@ public class Seeder {
         locationRepository.saveAll(locations);
     }
 
-    public void addCourses(){
+    public void addCourses() {
         List<Course> courses = new ArrayList<>();
 
         // Initialize courses with descriptions and credits
@@ -179,6 +184,104 @@ public class Seeder {
 
         // Save all courses
         courseRepository.saveAll(courses);
+    }
+
+    void addFaculties() {
+        Map<RoleType, Role> rolesMap = roleRepository.findAll().stream()
+                .collect(Collectors.toMap(Role::getRoleType, role -> role));
+
+
+        // Initialize faculties
+        Faculty f1 = new Faculty();
+        f1.setUsername("pcoraza");
+        f1.setPassword("123456");
+        f1.setFirstName("Paul");
+        f1.setLastName("Coraza");
+        f1.setPosition("Professor");
+        f1.setBirthDate(LocalDate.of(1980, 4, 1));
+        f1.setHobbies(List.of("Reading", "Writing", "Teaching"));
+        f1.setEmailAddress("pcoraza@miu.edu");
+        f1.setGenderType(GenderType.MALE);
+        f1.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        Faculty f2 = new Faculty();
+        f2.setUsername("aochirbat");
+        f2.setPassword("abcdef");
+        f2.setFirstName("Ankhtuya");
+        f2.setLastName("Ochirbat");
+        f2.setPosition("Associate Professor");
+        f2.setBirthDate(LocalDate.of(1985, 8, 15));
+        f2.setHobbies(List.of("Traveling", "Cooking", "Music"));
+        f2.setEmailAddress("aochirbat@miu.edu");
+        f2.setGenderType(GenderType.FEMALE);
+        f2.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        Faculty f3 = new Faculty();
+        f3.setUsername("psalek");
+        f3.setPassword("qwerty");
+        f3.setFirstName("Payman");
+        f3.setLastName("Salek");
+        f3.setPosition("Professor");
+        f3.setBirthDate(LocalDate.of(1982, 3, 20));
+        f3.setHobbies(List.of("Soccer", "Gardening", "Movies", "TM"));
+        f3.setEmailAddress("psalek@miu.edu");
+        f3.setGenderType(GenderType.MALE);
+        f3.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        Faculty f4 = new Faculty();
+        f4.setUsername("nnajeeb");
+        f4.setPassword("xyz123");
+        f4.setFirstName("Najeeb");
+        f4.setLastName("Najeeb");
+        f4.setPosition("Professor");
+        f4.setBirthDate(LocalDate.of(1978, 12, 10));
+        f4.setHobbies(List.of("Reading", "Swimming", "Photography"));
+        f4.setEmailAddress("nnajeeb@miu.edu");
+        f4.setGenderType(GenderType.MALE);
+        f4.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        Faculty f5 = new Faculty();
+        f5.setUsername("tiumur");
+        f5.setPassword("password");
+        f5.setFirstName("Tacettin Umur");
+        f5.setLastName("Inan");
+        f5.setPosition("Professor");
+        f5.setBirthDate(LocalDate.of(1970, 5, 5));
+        f5.setHobbies(List.of("Chess", "Traveling", "History"));
+        f5.setEmailAddress("tiumur@miu.edu");
+        f5.setGenderType(GenderType.MALE);
+        f5.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        Faculty f6 = new Faculty();
+        f6.setUsername("saburas");
+        f6.setPassword("abcdefg");
+        f6.setFirstName("Sanad");
+        f6.setLastName("Aburass");
+        f6.setPosition("Associate Professor");
+        f6.setBirthDate(LocalDate.of(1988, 9, 25));
+        f6.setHobbies(List.of("Reading", "Writing", "Research"));
+        f6.setEmailAddress("saburas@miu.edu");
+        f6.setGenderType(GenderType.MALE);
+        f6.getRoles().add(rolesMap.get(RoleType.FACULTY));
+
+        // Save faculties
+        facultyRepository.saveAll(List.of(f1, f2, f3, f4, f5, f6));
+    }
+
+    void addRoles() {
+        Role r1 = new Role();
+        r1.setRoleType(RoleType.ADMIN);
+
+        Role r2 = new Role();
+        r2.setRoleType(RoleType.STUDENT);
+
+        Role r3 = new Role();
+        r3.setRoleType(RoleType.STAFF);
+
+        Role r4 = new Role();
+        r4.setRoleType(RoleType.FACULTY);
+
+        roleRepository.saveAll(List.of(r1, r2, r3, r4));
     }
 
 }
