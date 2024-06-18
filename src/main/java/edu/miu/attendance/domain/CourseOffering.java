@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumType.CourseOfferingType;
+import edu.miu.attendance.domain.enums.CourseOfferingType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,9 +14,6 @@ public class CourseOffering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "credits")
-    private double credits;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "CourseOfferingType")
     private CourseOfferingType courseOfferingType;
@@ -27,15 +24,22 @@ public class CourseOffering {
     @Column(name = "Room")
     private String room;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Course course;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Faculty faculty;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Session> sessions;
 
     @Embedded
-    private AuditData auditData=new AuditData();
+    private AuditData auditData;
+
+    @PrePersist
+    void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+    }
 }

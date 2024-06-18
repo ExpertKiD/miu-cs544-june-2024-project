@@ -1,10 +1,6 @@
 package edu.miu.attendance.dto;
 
-import edu.miu.attendance.domain.Course;
-import edu.miu.attendance.domain.Faculty;
-import edu.miu.attendance.domain.Session;
-import edu.miu.attendance.enumType.CourseOfferingType;
-import jakarta.persistence.*;
+import edu.miu.attendance.domain.enums.CourseOfferingType;
 import lombok.Data;
 
 import java.util.List;

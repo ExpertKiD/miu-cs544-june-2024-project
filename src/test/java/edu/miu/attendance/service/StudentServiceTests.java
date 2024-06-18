@@ -1,8 +1,8 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Student;
+import edu.miu.attendance.domain.enums.GenderType;
 import edu.miu.attendance.dto.StudentDTO;
-import edu.miu.attendance.enumType.GenderType;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
@@ -30,20 +31,10 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class StudentServiceTests {
 
-    @TestConfiguration
-    static class StudentServiceTestContextConfiguration {
-        @Bean
-        public StudentService studentService() {
-            return new StudentServiceImpl();
-        }
-    }
-
     @Autowired
     private StudentService studentService;
-
     @MockBean
     private StudentRepository studentRepository;
-
     private StudentDTO studentDTO;
 
     @BeforeEach
@@ -59,7 +50,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testSaveStudent() {
+    void testSaveStudent() {
         studentDTO.setStudentId("123456");
         StudentDTO savedStudent = studentService.addStudent(studentDTO);
 
@@ -69,7 +60,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testGetAllStudents() {
+    void testGetAllStudents() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<StudentDTO> result = studentService.getAllStudents(pageable);
 
@@ -80,7 +71,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testGetStudentById() {
+    void testGetStudentById() {
         StudentDTO foundStudent = studentService.getStudentByStudentId("12345");
 
         assertThat(foundStudent, is(notNullValue()));
@@ -89,7 +80,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testGetStudentById_ResourceNotFoundException() {
+    void testGetStudentById_ResourceNotFoundException() {
         when(studentRepository.findStudentByStudentId(anyString())).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -101,7 +92,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testUpdateStudent() {
+    void testUpdateStudent() {
         StudentDTO updatedStudent = studentService.updateStudent(studentDTO.getStudentId(), studentDTO);
 
         assertThat(updatedStudent, is(notNullValue()));
@@ -110,7 +101,7 @@ class StudentServiceTests {
     }
 
     @Test
-     void testUpdateStudent_ResourceNotFoundException() {
+    void testUpdateStudent_ResourceNotFoundException() {
         when(studentRepository.findStudentByStudentId(anyString())).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -122,14 +113,14 @@ class StudentServiceTests {
     }
 
     @Test
-     void testDeleteStudent() {
+    void testDeleteStudent() {
         studentService.deleteStudentByStudentId("12345");
 
         verify(studentRepository, times(1)).deleteByStudentId(anyString());
     }
 
     @Test
-     void testDeleteStudent_ResourceNotFoundException() {
+    void testDeleteStudent_ResourceNotFoundException() {
         doThrow(new ResourceNotFoundException("Student with studentId #12345 doesn't exist")).when(studentRepository).deleteByStudentId(anyString());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -166,5 +157,13 @@ class StudentServiceTests {
         student.setApplicantId("APP123");
         student.setStudentId("12345");
         return student;
+    }
+
+    @TestConfiguration
+    static class StudentServiceTestContextConfiguration {
+        @Bean
+        public StudentService studentService() {
+            return new StudentServiceImpl();
+        }
     }
 }

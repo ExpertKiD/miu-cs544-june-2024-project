@@ -9,7 +9,6 @@ import java.time.LocalTime;
 @Entity
 @Data
 public class Session {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,4 +21,11 @@ public class Session {
 
     @Embedded
     private AuditData auditData;
+
+    @PrePersist
+    void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+    }
 }

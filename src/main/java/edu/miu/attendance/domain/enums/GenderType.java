@@ -1,4 +1,4 @@
-package edu.miu.attendance.enumType;
+package edu.miu.attendance.domain.enums;
 
 public enum GenderType {
     MALE,

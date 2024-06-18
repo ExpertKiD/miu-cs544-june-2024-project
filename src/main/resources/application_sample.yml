@@ -1,10 +1,16 @@
 spring:
   application:
     name: UniAttendanceSystem
+    seed: true    # seed must be true at least once, after that you can set it to false
+  profiles:
+    active: dev   # seeder work only in dev mode
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop   # set it to create-drop, update or none after once
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
     show-sql: true
     defer-datasource-initialization: true
   datasource:

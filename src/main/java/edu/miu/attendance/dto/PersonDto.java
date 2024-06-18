@@ -1,12 +1,7 @@
 package edu.miu.attendance.dto;
 
-import edu.miu.attendance.domain.AuditData;
-import edu.miu.attendance.enumType.GenderType;
-import jakarta.persistence.*;
+import edu.miu.attendance.domain.enums.GenderType;
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class PersonDto {
