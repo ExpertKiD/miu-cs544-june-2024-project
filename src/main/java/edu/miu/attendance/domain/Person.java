@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="Person")
+@Table(name = "Person")
 @SecondaryTable(
-        name="PersonAccount",
+        name = "PersonAccount",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 )
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,7 +30,7 @@ public abstract class Person {
     @Enumerated(EnumType.STRING)
     @Column(name = "GenderType")
     private GenderType genderType;
-    @Column(name="birthdate")
+    @Column(name = "birthdate")
     private LocalDate birthDate;
     @Column(name = "EmailAddress")
     private String emailAddress;
@@ -39,8 +39,8 @@ public abstract class Person {
     @Column(name = "password", table = "PersonAccount")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -52,6 +52,10 @@ public abstract class Person {
     protected void onCreate() {
         if (auditData == null) {
             auditData = new AuditData();
+        }
+
+        if (roles == null) {
+            roles = new HashSet<>();
         }
     }
 
