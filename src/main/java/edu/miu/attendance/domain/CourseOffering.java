@@ -30,7 +30,7 @@ public class CourseOffering {
     @ManyToOne(cascade = CascadeType.ALL)
     private Faculty faculty;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Session> sessions;
 
     @Embedded
