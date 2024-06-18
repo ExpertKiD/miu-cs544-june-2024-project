@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumType.GenderType;
+import edu.miu.attendance.enumeration.GenderType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -43,9 +43,16 @@ public abstract class Person {
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     @Embedded
-    private AuditData data = new AuditData();
+    private AuditData auditData;
+
+    @PrePersist
+    protected void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+    }
 
 }
