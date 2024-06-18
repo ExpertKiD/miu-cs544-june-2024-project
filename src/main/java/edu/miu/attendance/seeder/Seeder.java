@@ -6,8 +6,8 @@ import edu.miu.attendance.enumeration.RoleType;
 import edu.miu.attendance.repository.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -15,24 +15,43 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 @Profile("dev")
 @Transactional
 @Slf4j
-@AllArgsConstructor
 public class Seeder {
+
+    private final boolean seed;
+
     private final RoleRepository roleRepository;
+
     private final LocationRepository locationRepository;
+
     private final LocationTypeRepository locationTypeRepository;
+
     private final CourseRepository courseRepository;
+
     private final FacultyRepository facultyRepository;
 
+    public Seeder(@Value("${spring.application.seed:false}") boolean seed,
+                  RoleRepository roleRepository,
+                  LocationRepository locationRepository, LocationTypeRepository locationTypeRepository, CourseRepository courseRepository, FacultyRepository facultyRepository) {
+        this.roleRepository = roleRepository;
+        this.locationRepository = locationRepository;
+        this.locationTypeRepository = locationTypeRepository;
+        this.courseRepository = courseRepository;
+        this.facultyRepository = facultyRepository;
+        this.seed = seed;
+    }
 
     @PostConstruct
     public void seedDatabase() {
+        if (!seed) {
+            return;
+        }
+
         log.info("\nSeeding to the database");
 
         log.info("Seeding Location types");
