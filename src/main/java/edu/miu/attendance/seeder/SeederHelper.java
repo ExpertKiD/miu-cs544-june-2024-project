@@ -11,12 +11,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,6 +34,8 @@ public class SeederHelper {
     private final StudentRepository studentRepository;
 
     private final Random random = new Random(42);
+    private final HashMap<CourseOffering, Location> locationHashMap =
+            new HashMap<>();
 
     public SeederHelper(
             RoleRepository roleRepository,
@@ -445,6 +445,8 @@ public class SeederHelper {
                         julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
                 )
         );
+        student1.getAttendanceRecords().addAll(getAttendanceRecords(student1));
+
 
         Student student2 = new Student();
         student2.setFirstName("Jane");
@@ -467,6 +469,7 @@ public class SeederHelper {
                         julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
                 )
         );
+        student2.getAttendanceRecords().addAll(getAttendanceRecords(student2));
 
         Student student3 = new Student();
         student3.setFirstName("Michael");
@@ -489,6 +492,7 @@ public class SeederHelper {
                         julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
                 )
         );
+        student3.getAttendanceRecords().addAll(getAttendanceRecords(student3));
 
 
         Student student4 = new Student();
@@ -512,6 +516,7 @@ public class SeederHelper {
                         julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
                 )
         );
+        student4.getAttendanceRecords().addAll(getAttendanceRecords(student4));
 
         Student student5 = new Student();
         student5.setFirstName("David");
@@ -534,6 +539,7 @@ public class SeederHelper {
                         julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
                 )
         );
+        student5.getAttendanceRecords().addAll(getAttendanceRecords(student5));
 
         students.add(student1);
         students.add(student2);
@@ -544,5 +550,54 @@ public class SeederHelper {
         studentRepository.saveAll(students);
     }
 
+    List<AttendanceRecord> getAttendanceRecords(Student student) {
+        List<AttendanceRecord> records = new ArrayList<>();
+
+        student.getCoursesRegistrations().forEach(
+                courseOffering -> {
+                    courseOffering.getSessions().stream()
+                            .filter(session -> session.getSessionDate()
+                                    .isBefore(LocalDate.now().minusDays(1))
+                            ).forEach(
+                                    session -> {
+                                        records.add(getAttendanceRecord(student,
+                                                session, courseOffering));
+                                    }
+                            );
+                }
+        );
+
+        return records;
+    }
+
+    private AttendanceRecord getAttendanceRecord(Student student, Session session,
+                                                 CourseOffering courseOffering) {
+
+
+        List<Location> locations = locationRepository.findAll();
+        courseOfferingRepository.findAll().stream()
+                .forEach(courseOffering1 -> {
+                    locationHashMap.putIfAbsent(courseOffering1,
+                            locations.get(random.nextInt(locations.size())));
+                });
+
+        AttendanceRecord mRecord = new AttendanceRecord();
+
+        mRecord.setStudent(student);
+        mRecord.setSession(session);
+
+        LocalDateTime sessionDateTime =
+                session.getSessionDate().atTime(session.getStartTime());
+
+        LocalDateTime attendanceDateTime =
+                sessionDateTime.plusMinutes(random.nextInt(-10,
+                        20));
+
+        mRecord.setScanDateTime(attendanceDateTime);
+        mRecord.setCourseOffering(courseOffering);
+        mRecord.setLocation(locationHashMap.get(courseOffering));
+
+        return mRecord;
+    }
 
 }
