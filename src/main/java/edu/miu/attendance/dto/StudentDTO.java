@@ -1,6 +1,6 @@
 package edu.miu.attendance.dto;
 
-import edu.miu.attendance.enumeration.GenderType;
+import edu.miu.attendance.domain.enums.GenderType;
 import lombok.Data;
 
 import java.time.LocalDate;

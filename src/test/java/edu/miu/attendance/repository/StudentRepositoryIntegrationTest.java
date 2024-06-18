@@ -1,7 +1,7 @@
 package edu.miu.attendance.repository;
 
 import edu.miu.attendance.domain.Student;
-import edu.miu.attendance.enumeration.GenderType;
+import edu.miu.attendance.domain.enums.GenderType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

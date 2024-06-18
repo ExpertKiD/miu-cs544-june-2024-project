@@ -1,9 +1,10 @@
 package edu.miu.attendance.seeder;
 
 import edu.miu.attendance.domain.*;
-import edu.miu.attendance.enumeration.CourseOfferingType;
-import edu.miu.attendance.enumeration.GenderType;
-import edu.miu.attendance.enumeration.RoleType;
+import edu.miu.attendance.domain.enums.CourseOfferingType;
+import edu.miu.attendance.domain.enums.GenderType;
+import edu.miu.attendance.domain.enums.LocationType;
+import edu.miu.attendance.domain.enums.RoleType;
 import edu.miu.attendance.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;

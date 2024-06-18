@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumeration.GenderType;
+import edu.miu.attendance.domain.enums.GenderType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;

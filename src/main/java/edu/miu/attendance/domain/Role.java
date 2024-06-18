@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumeration.RoleType;
+import edu.miu.attendance.domain.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +15,6 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20,unique = true)
+    @Column(length = 20, unique = true)
     private RoleType roleType;
 }

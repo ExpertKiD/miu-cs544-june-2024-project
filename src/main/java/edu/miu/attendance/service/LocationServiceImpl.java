@@ -1,18 +1,14 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Location;
-import edu.miu.attendance.domain.LocationType;
+import edu.miu.attendance.domain.enums.LocationType;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.repository.LocationRepository;
 import edu.miu.attendance.repository.LocationTypeRepository;
-import edu.miu.attendance.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LocationServiceImpl implements LocationService {

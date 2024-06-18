@@ -1,6 +1,6 @@
 package edu.miu.attendance.domain;
 
-import edu.miu.attendance.enumeration.CourseOfferingType;
+import edu.miu.attendance.domain.enums.CourseOfferingType;
 import jakarta.persistence.*;
 import lombok.Data;
 
