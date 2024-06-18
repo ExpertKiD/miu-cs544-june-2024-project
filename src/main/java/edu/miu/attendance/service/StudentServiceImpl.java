@@ -19,21 +19,15 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private ModelMapper modelMapper;
-
-
     @Override
     @Transactional
     public StudentDTO addStudent(StudentDTO studentDTO) {
         boolean studentExists = studentRepository.findStudentByStudentId(studentDTO.getStudentId()).isPresent();
-
         if (studentExists) {
             throw new ResourceAlreadyExistsException("Student with id #" + studentDTO.getStudentId() + " already exists");
         }
-
         Student student = modelMapper.map(studentDTO, Student.class);
-
         student = studentRepository.save(student);
-
         return modelMapper.map(student, StudentDTO.class);
     }
 
@@ -46,7 +40,6 @@ public class StudentServiceImpl implements StudentService {
     public StudentDTO getStudentByStudentId(String studentId) {
         Student student = studentRepository.findStudentByStudentId(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student with studentId #" + studentId + " doesn't exist"));
-
         return modelMapper.map(student, StudentDTO.class);
     }
 
