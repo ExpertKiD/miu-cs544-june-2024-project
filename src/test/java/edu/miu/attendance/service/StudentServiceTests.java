@@ -2,7 +2,7 @@ package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Student;
 import edu.miu.attendance.dto.StudentDTO;
-import edu.miu.attendance.enumType.GenderType;
+import edu.miu.attendance.enumeration.GenderType;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
