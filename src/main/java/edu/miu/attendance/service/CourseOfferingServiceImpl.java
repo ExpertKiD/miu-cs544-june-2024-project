@@ -38,7 +38,8 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
     private SessionRepository sessionRepository;
 
     public Page<CourseOfferingDto> findAll(Pageable pageable) {
-        return courseOfferingRepository.findAll(pageable).map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class));
+        return courseOfferingRepository.findAll(pageable)
+                .map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class));
     }
 
     public CourseOfferingDto findById(long id) {
@@ -56,7 +57,6 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
         }else{
             courseOffering=modelMapper.map(courseOfferingDto, CourseOffering.class);
         }
-
 
         Course course=courseRepository.findById(courseOfferingDto.getCourse_id()).orElseThrow(() -> new ResourceNotFoundException("Course doesn't exit!"));
         Faculty faculty= facultyRepository.findById(courseOfferingDto.getFaculty_id()).orElseThrow(() -> new ResourceNotFoundException("Faculty doesn't exit!"));
