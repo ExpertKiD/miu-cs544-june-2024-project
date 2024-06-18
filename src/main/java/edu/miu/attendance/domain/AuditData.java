@@ -22,6 +22,8 @@ public class AuditData {
     protected void onCreate() {
         createdOn = LocalDateTime.now();
         updatedOn = LocalDateTime.now();
+        createdBy = "system";
+        updatedBy = "system";
     }
 
     @PreUpdate
