@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,9 @@ public class SeederHelper {
     private final LocationTypeRepository locationTypeRepository;
     private final CourseRepository courseRepository;
     private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
+
+    private final Random random = new Random(42);
 
     public SeederHelper(
             RoleRepository roleRepository,
@@ -39,13 +43,15 @@ public class SeederHelper {
             LocationTypeRepository locationTypeRepository,
             CourseRepository courseRepository,
             FacultyRepository facultyRepository,
-            CourseOfferingRepository courseOfferingRepository) {
+            CourseOfferingRepository courseOfferingRepository,
+            StudentRepository studentRepository) {
         this.roleRepository = roleRepository;
         this.locationRepository = locationRepository;
         this.locationTypeRepository = locationTypeRepository;
         this.courseRepository = courseRepository;
         this.facultyRepository = facultyRepository;
         this.courseOfferingRepository = courseOfferingRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Transactional
@@ -70,6 +76,9 @@ public class SeederHelper {
 
         log.info("Seeding Course Offerings");
         addCourseOfferings();
+
+        log.info("Seeding Students");
+        addStudents();
     }
 
     private void addLocationTypes() {
@@ -208,6 +217,7 @@ public class SeederHelper {
 
     void addFaculties() {
         Map<RoleType, Role> rolesMap = roleRepository.findAll().stream()
+                .filter(role -> role.getRoleType() == RoleType.FACULTY)
                 .collect(Collectors.toMap(Role::getRoleType, role -> role));
 
 
@@ -314,7 +324,7 @@ public class SeederHelper {
 
         List<CourseOffering> courseOfferings = new ArrayList<>();
 
-        Random random = new Random(42);
+
         var rooms = new ArrayList<>(List.of("VR17", "Dalby Hall", "MH12",
                 "VR12", "VR13"));
 
@@ -372,6 +382,166 @@ public class SeederHelper {
         }
 
         return sessions;
+    }
+
+    void addStudents() {
+        List<Student> students = new ArrayList<>();
+
+        Map<RoleType, Role> studentRolesMap = roleRepository.findAll().stream()
+                .filter(role -> role.getRoleType() == RoleType.STUDENT)
+                .collect(Collectors.toMap(Role::getRoleType, role -> role));
+
+        List<Faculty> faculties = facultyRepository.findAll();
+
+        List<CourseOffering> courseOfferings =
+                courseOfferingRepository.findAll();
+
+        List<CourseOffering> mayCourseOfferings =
+                courseOfferings.stream().filter(
+                                courseOffering -> courseOffering
+                                        .getSessions()
+                                        .stream()
+                                        .anyMatch(session -> session.getSessionDate().getMonth() == Month.MAY)
+                        )
+                        .toList();
+
+        List<CourseOffering> juneCourseOfferings =
+                courseOfferings.stream().filter(
+                                courseOffering -> courseOffering
+                                        .getSessions()
+                                        .stream()
+                                        .anyMatch(session -> session.getSessionDate().getMonth() == Month.JUNE)
+                        )
+                        .toList();
+
+        List<CourseOffering> julyCourseOfferings =
+                courseOfferings.stream().filter(
+                                courseOffering -> courseOffering
+                                        .getSessions()
+                                        .stream()
+                                        .anyMatch(session -> session.getSessionDate().getMonth() == Month.JULY)
+                        )
+                        .toList();
+
+
+        Student student1 = new Student();
+        student1.setFirstName("John");
+        student1.setLastName("Doe");
+        student1.setGenderType(GenderType.MALE);
+        student1.setBirthDate(LocalDate.of(2000, 1, 1));
+        student1.setEmailAddress("john.doe@miu.edu");
+        student1.setUsername("johndoe");
+        student1.setPassword("password123");
+        student1.setEntry("Winter 2023");
+        student1.setAlternateID("A1001");
+        student1.setApplicantId("APP1001");
+        student1.setStudentId("ST1001");
+        student1.getRoles().add(studentRolesMap.get(RoleType.STUDENT));
+        student1.setFacultyAdviser(faculties.get(random.nextInt(faculties.size())));
+        student1.getCoursesRegistrations().addAll(
+                List.of(
+                        mayCourseOfferings.get(random.nextInt(mayCourseOfferings.size())),
+                        juneCourseOfferings.get(random.nextInt(juneCourseOfferings.size())),
+                        julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
+                )
+        );
+
+        Student student2 = new Student();
+        student2.setFirstName("Jane");
+        student2.setLastName("Smith");
+        student2.setGenderType(GenderType.FEMALE);
+        student2.setBirthDate(LocalDate.of(1999, 5, 15));
+        student2.setEmailAddress("jane.smith@miu.edu");
+        student2.setUsername("janesmith");
+        student2.setPassword("password123");
+        student2.setEntry("Spring 2023");
+        student2.setAlternateID("A1002");
+        student2.setApplicantId("APP1002");
+        student2.setStudentId("ST1002");
+        student2.getRoles().add(studentRolesMap.get(RoleType.STUDENT));
+        student2.setFacultyAdviser(faculties.get(random.nextInt(faculties.size())));
+        student2.getCoursesRegistrations().addAll(
+                List.of(
+                        mayCourseOfferings.get(random.nextInt(mayCourseOfferings.size())),
+                        juneCourseOfferings.get(random.nextInt(juneCourseOfferings.size())),
+                        julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
+                )
+        );
+
+        Student student3 = new Student();
+        student3.setFirstName("Michael");
+        student3.setLastName("Johnson");
+        student3.setGenderType(GenderType.MALE);
+        student3.setBirthDate(LocalDate.of(1998, 8, 21));
+        student3.setEmailAddress("michael.johnson@miu.edu");
+        student3.setUsername("michaeljohnson");
+        student3.setPassword("password123");
+        student3.setEntry("Summer 2023");
+        student3.setAlternateID("A1003");
+        student3.setApplicantId("APP1003");
+        student3.setStudentId("ST1003");
+        student3.getRoles().add(studentRolesMap.get(RoleType.STUDENT));
+        student3.setFacultyAdviser(faculties.get(random.nextInt(faculties.size())));
+        student3.getCoursesRegistrations().addAll(
+                List.of(
+                        mayCourseOfferings.get(random.nextInt(mayCourseOfferings.size())),
+                        juneCourseOfferings.get(random.nextInt(juneCourseOfferings.size())),
+                        julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
+                )
+        );
+
+
+        Student student4 = new Student();
+        student4.setFirstName("Emily");
+        student4.setLastName("Davis");
+        student4.setGenderType(GenderType.FEMALE);
+        student4.setBirthDate(LocalDate.of(2001, 12, 10));
+        student4.setEmailAddress("emily.davis@miu.edu");
+        student4.setUsername("emilydavis");
+        student4.setPassword("password123");
+        student4.setEntry("Fall 2023");
+        student4.setAlternateID("A1004");
+        student4.setApplicantId("APP1004");
+        student4.setStudentId("ST1004");
+        student4.getRoles().add(studentRolesMap.get(RoleType.STUDENT));
+        student4.setFacultyAdviser(faculties.get(random.nextInt(faculties.size())));
+        student4.getCoursesRegistrations().addAll(
+                List.of(
+                        mayCourseOfferings.get(random.nextInt(mayCourseOfferings.size())),
+                        juneCourseOfferings.get(random.nextInt(juneCourseOfferings.size())),
+                        julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
+                )
+        );
+
+        Student student5 = new Student();
+        student5.setFirstName("David");
+        student5.setLastName("Brown");
+        student5.setGenderType(GenderType.MALE);
+        student5.setBirthDate(LocalDate.of(2002, 3, 30));
+        student5.setEmailAddress("david.brown@miu.edu");
+        student5.setUsername("davidbrown");
+        student5.setPassword("password123");
+        student5.setEntry("Spring 2024");
+        student5.setAlternateID("A1005");
+        student5.setApplicantId("APP1005");
+        student5.setStudentId("ST1005");
+        student5.getRoles().add(studentRolesMap.get(RoleType.STUDENT));
+        student5.setFacultyAdviser(faculties.get(random.nextInt(faculties.size())));
+        student5.getCoursesRegistrations().addAll(
+                List.of(
+                        mayCourseOfferings.get(random.nextInt(mayCourseOfferings.size())),
+                        juneCourseOfferings.get(random.nextInt(juneCourseOfferings.size())),
+                        julyCourseOfferings.get(random.nextInt(julyCourseOfferings.size()))
+                )
+        );
+
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+        students.add(student4);
+        students.add(student5);
+
+        studentRepository.saveAll(students);
     }
 
 
