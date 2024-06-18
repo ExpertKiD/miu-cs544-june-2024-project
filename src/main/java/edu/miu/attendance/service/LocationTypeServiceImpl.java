@@ -3,12 +3,11 @@ package edu.miu.attendance.service;
 import edu.miu.attendance.domain.LocationType;
 import edu.miu.attendance.dto.LocationTypeDTO;
 import edu.miu.attendance.repository.LocationTypeRepository;
-import edu.miu.attendance.service.LocationTypeService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LocationTypeServiceImpl implements LocationTypeService {
@@ -31,12 +30,14 @@ public class LocationTypeServiceImpl implements LocationTypeService {
     }
 
     @Override
+    @Transactional
     public LocationTypeDTO createLocationType(LocationTypeDTO locationTypeDTO) {
         LocationType locationType = convertToEntity(locationTypeDTO);
         return convertToDTO(locationTypeRepository.save(locationType));
     }
 
     @Override
+    @Transactional
     public LocationTypeDTO updateLocationType(Long id, LocationTypeDTO locationTypeDTO) {
         LocationType locationType = locationTypeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("LocationType not found"));
@@ -45,6 +46,7 @@ public class LocationTypeServiceImpl implements LocationTypeService {
     }
 
     @Override
+    @Transactional
     public void deleteLocationType(Long id) {
         locationTypeRepository.deleteById(id);
     }
