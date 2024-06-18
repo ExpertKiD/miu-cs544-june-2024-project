@@ -1,4 +1,5 @@
 package edu.miu.attendance.service;
+
 import edu.miu.attendance.domain.AttendanceRecord;
 import edu.miu.attendance.dto.AttendanceRecordDTO;
 import edu.miu.attendance.repository.AttendanceRecordRepository;
@@ -20,14 +21,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     @Override
     public Page<AttendanceRecordDTO> getAttendanceRecordsForStudent(Long studentId, Pageable pageable) {
         Page<AttendanceRecord> attendanceRecords = attendanceRecordRepository.findByStudentId(studentId, pageable);
-
-        return attendanceRecords.map(record -> {
-            AttendanceRecordDTO dto = modelMapper.map(record, AttendanceRecordDTO.class);
-            dto.setLocationName(record.getLocation().getName());
-            dto.setLocationType(record.getLocation().getLocationType().getType());
-            //dto.setCourseOfferingName(record.getCourseOffering().getCourse().getCourseName());
-            //dto.setSessionName(record.getSession().getName());
-            return dto;
-        });
+        return attendanceRecords.map(attendanceRecord -> modelMapper.map(attendanceRecord, AttendanceRecordDTO.class));
     }
 }
