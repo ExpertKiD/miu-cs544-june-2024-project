@@ -14,9 +14,6 @@ public class CourseOffering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "credits")
-    private double credits;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "CourseOfferingType")
     private CourseOfferingType courseOfferingType;
@@ -27,15 +24,22 @@ public class CourseOffering {
     @Column(name = "Room")
     private String room;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Course course;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Faculty faculty;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Session> sessions;
 
     @Embedded
     private AuditData auditData;
+
+    @PrePersist
+    void onCreate() {
+        if (auditData == null) {
+            auditData = new AuditData();
+        }
+    }
 }
