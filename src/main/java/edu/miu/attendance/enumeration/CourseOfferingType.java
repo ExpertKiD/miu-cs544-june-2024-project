@@ -1,4 +1,4 @@
-package edu.miu.attendance.enumType;
+package edu.miu.attendance.enumeration;
 
 public enum CourseOfferingType {
     DISTANT,
