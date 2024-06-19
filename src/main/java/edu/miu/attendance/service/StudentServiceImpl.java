@@ -1,6 +1,7 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Student;
+import edu.miu.attendance.dto.CourseDTO;
 import edu.miu.attendance.dto.StudentDTO;
 import edu.miu.attendance.exception.ResourceAlreadyExistsException;
 import edu.miu.attendance.exception.ResourceNotFoundException;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service()
 public class StudentServiceImpl implements StudentService {
@@ -52,6 +56,20 @@ public class StudentServiceImpl implements StudentService {
         modelMapper.map(studentDTO, student);
 
         return modelMapper.map(studentRepository.save(student), StudentDTO.class);
+    }
+
+    @Override
+    public StudentDTO getStudentWithCourses(String studentId) {
+        Student student = studentRepository.findStudentByStudentId(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with studentId #" + studentId + " doesn't exist"));
+        StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);
+
+        // Converting CourseOfferings to CourseDTOs
+        List<CourseDTO> courseDTOs = student.getCoursesRegistrations().stream()
+                .map(courseOffering -> modelMapper.map(courseOffering.getCourse(), CourseDTO.class))
+                .toList();
+        studentDTO.setCourses(courseDTOs);
+        return studentDTO;
     }
 
     @Override

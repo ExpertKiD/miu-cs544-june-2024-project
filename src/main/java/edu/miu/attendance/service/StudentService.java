@@ -9,5 +9,7 @@ public interface StudentService {
     Page<StudentDTO> getAllStudents(Pageable pageable);
     StudentDTO getStudentByStudentId(String studentId);
     StudentDTO updateStudent(String studentId, StudentDTO studentDTO);
+    StudentDTO getStudentWithCourses(String studentId);
     void deleteStudentByStudentId(String studentId);
+
 }

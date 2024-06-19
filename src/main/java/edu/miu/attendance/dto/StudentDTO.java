@@ -4,6 +4,7 @@ import edu.miu.attendance.domain.enums.GenderType;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class StudentDTO {
@@ -16,4 +17,5 @@ public class StudentDTO {
     private String alternateID;
     private String applicantId;
     private String studentId;
+    private List<CourseDTO> courses;
 }

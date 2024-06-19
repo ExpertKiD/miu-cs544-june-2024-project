@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AttendanceRecordControllerTest {
+class AttendanceRecordControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
