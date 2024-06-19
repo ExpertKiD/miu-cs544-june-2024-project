@@ -1,7 +1,7 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Location;
-import edu.miu.attendance.domain.LocationType;
+import edu.miu.attendance.domain.enums.LocationType;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.LocationRepository;
