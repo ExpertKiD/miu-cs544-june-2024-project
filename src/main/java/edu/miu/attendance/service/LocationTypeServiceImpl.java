@@ -1,6 +1,6 @@
 package edu.miu.attendance.service;
 
-import edu.miu.attendance.domain.LocationType;
+import edu.miu.attendance.domain.enums.LocationType;
 import edu.miu.attendance.dto.LocationTypeDTO;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.LocationTypeRepository;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class LocationTypeServiceImpl implements LocationTypeService {
