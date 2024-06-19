@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 public class CourseOfferingController {
@@ -44,6 +46,12 @@ public class CourseOfferingController {
     @DeleteMapping("/sys-admin/course-offerings/{offeringId}")
     public ResponseEntity<?> deleteCourseOffering(@PathVariable long offeringId){
         CourseOfferingDto courseOfferingDto=courseOfferingService.deleteCourseOffering(offeringId);
+        return ResponseEntity.ok(courseOfferingDto);
+    }
+
+    @GetMapping("/admin-view/course-offerings")
+    public ResponseEntity<?> getCourseOfferingsById(@RequestParam("date") String date){
+        List<CourseOfferingDto> courseOfferingDto=courseOfferingService.findByDate(date);
         return ResponseEntity.ok(courseOfferingDto);
     }
 
