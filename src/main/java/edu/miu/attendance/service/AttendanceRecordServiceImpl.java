@@ -21,6 +21,13 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     @Override
     public Page<AttendanceRecordDTO> getAttendanceRecordsForStudent(Long studentId, Pageable pageable) {
         Page<AttendanceRecord> attendanceRecords = attendanceRecordRepository.findByStudentId(studentId, pageable);
-        return attendanceRecords.map(attendanceRecord -> modelMapper.map(attendanceRecord, AttendanceRecordDTO.class));
+
+        return attendanceRecords.map(attendanceRecord -> {
+            AttendanceRecordDTO dto = modelMapper.map(attendanceRecord, AttendanceRecordDTO.class);
+            dto.setLocationName(attendanceRecord.getLocation().getName());
+            dto.setLocationType(attendanceRecord.getLocation().getLocationType().getType());
+            dto.setCourseOfferingName(attendanceRecord.getCourseOffering().getCourse().getName());
+            return dto;
+        });
     }
 }
