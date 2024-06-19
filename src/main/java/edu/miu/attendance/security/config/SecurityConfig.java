@@ -24,7 +24,10 @@ public class SecurityConfig {
         String sysAdminRole = RoleType.ADMIN.name();
 
 
-        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/token").permitAll() // Allow access to
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(requests -> requests.requestMatchers(
+                                        "/api/v1/token").permitAll() // Allow access to
                                 // the token endpoint without authentication
                                 .requestMatchers("/api/v1/student-view/**").hasRole(studentRole) // Require STUDENT role for /api/v1/student-view/**
                                 .requestMatchers("/api/v1/admin-view/**").hasAnyRole(adminRoles) // Require FACULTY, STAFF, or ADMIN adminRoles for /api/v1/admin-view/**
@@ -32,7 +35,9 @@ public class SecurityConfig {
                                 .anyRequest().permitAll() // All other requests require
                         // authentication
                 )
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults())
+        ;
+
 
         return http.build();
     }
