@@ -1,134 +1,129 @@
 package edu.miu.attendance;
 
-import edu.miu.attendance.domain.AuditData;
+import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.domain.Location;
 import edu.miu.attendance.domain.enums.LocationType;
-import edu.miu.attendance.dto.LocationDTO;
+import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.LocationRepository;
-import edu.miu.attendance.repository.LocationTypeRepository;
 import edu.miu.attendance.service.LocationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class LocationServiceTest {
-
-    @InjectMocks
-    private LocationServiceImpl locationService;
+@ExtendWith(MockitoExtension.class)
+class LocationServiceTest {
 
     @Mock
     private LocationRepository locationRepository;
 
     @Mock
-    private LocationTypeRepository locationTypeRepository;
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private LocationServiceImpl locationService;
+
+    private Location location;
+    private LocationDTO locationDTO;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        location = new Location();
+        location.setId(1L);
+        location.setName("Library");
+        LocationType locationType = new LocationType();
+        locationType.setType("ON_CAMPUS");
+        location.setLocationType(locationType);
+
+        locationDTO = new LocationDTO();
+        locationDTO.setId(1L);
+        locationDTO.setName("Library");
+        locationDTO.setLocationTypeId(1L);
     }
 
     @Test
-    public void testGetAllLocations() {
-        Location location = createLocation();
+    void whenCreateLocation_thenLocationShouldBeCreated() {
+        when(locationRepository.save(any(Location.class))).thenReturn(location);
+        when(modelMapper.map(any(LocationDTO.class), any())).thenReturn(location);
+        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
+
+        LocationDTO createdLocationDTO = locationService.createLocation(locationDTO);
+
+        assertThat(createdLocationDTO).isNotNull();
+        assertThat(createdLocationDTO.getName()).isEqualTo(locationDTO.getName());
+    }
+
+    @Test
+    void whenGetAllLocations_thenLocationsShouldBeReturned() {
+        List<Location> locations = Arrays.asList(location);
+        Page<Location> page = new PageImpl<>(locations);
         Pageable pageable = PageRequest.of(0, 10);
 
-        Page<Location> locationsPage = new PageImpl<>(Collections.singletonList(location));
-        when(locationRepository.findAll(pageable)).thenReturn(locationsPage);
+        when(locationRepository.findAll(pageable)).thenReturn(page);
+        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
 
-        assertFalse(locationService.getAllLocations(pageable).isEmpty());
-        verify(locationRepository, times(1)).findAll();
+        Page<LocationDTO> result = locationService.getAllLocations(pageable);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getName()).isEqualTo(locationDTO.getName());
     }
 
     @Test
-    public void testGetLocationById() {
-        Location location = createLocation();
+    void whenGetLocationById_thenLocationShouldBeReturned() {
         when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
+        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
 
-        LocationDTO locationDTO = locationService.getLocationById(1L);
-        assertNotNull(locationDTO);
-        assertEquals(location.getName(), locationDTO.getName());
-        verify(locationRepository, times(1)).findById(1L);
+        LocationDTO foundLocationDTO = locationService.getLocationById(1L);
+
+        assertThat(foundLocationDTO).isNotNull();
+        assertThat(foundLocationDTO.getName()).isEqualTo(locationDTO.getName());
     }
 
     @Test
-    public void testCreateLocation() {
-        Location location = createLocation();
-        LocationDTO locationDTO = createLocationDTO();
-        when(locationTypeRepository.findById(locationDTO.getLocationTypeId())).thenReturn(Optional.of(location.getLocationType()));
-        when(locationRepository.save(any(Location.class))).thenReturn(location);
-
-        LocationDTO createdLocation = locationService.createLocation(locationDTO);
-        assertNotNull(createdLocation);
-        assertEquals(location.getName(), createdLocation.getName());
-        verify(locationRepository, times(1)).save(any(Location.class));
-    }
-
-    @Test
-    public void testUpdateLocation() {
-        Location location = createLocation();
-        LocationDTO locationDTO = createLocationDTO();
+    void whenUpdateLocation_thenLocationShouldBeUpdated() {
         when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
-        when(locationTypeRepository.findById(locationDTO.getLocationTypeId())).thenReturn(Optional.of(location.getLocationType()));
         when(locationRepository.save(any(Location.class))).thenReturn(location);
+        when(modelMapper.map(any(LocationDTO.class), any())).thenReturn(location);
+        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
 
-        LocationDTO updatedLocation = locationService.updateLocation(1L, locationDTO);
-        assertNotNull(updatedLocation);
-        assertEquals(locationDTO.getName(), updatedLocation.getName());
-        verify(locationRepository, times(1)).findById(1L);
-        verify(locationRepository, times(1)).save(any(Location.class));
+        LocationDTO updatedLocationDTO = locationService.updateLocation(1L, locationDTO);
+
+        assertThat(updatedLocationDTO).isNotNull();
+        assertThat(updatedLocationDTO.getName()).isEqualTo(locationDTO.getName());
     }
 
     @Test
-    public void testDeleteLocation() {
-        doNothing().when(locationRepository).deleteById(1L);
+    void whenDeleteLocation_thenLocationShouldBeDeleted() {
+        when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
 
         locationService.deleteLocation(1L);
-        verify(locationRepository, times(1)).deleteById(1L);
+
+        verify(locationRepository, times(1)).delete(location);
     }
 
-    private Location createLocation() {
-        Location location = new Location();
-        location.setId(1L);
-        location.setName("Room 302");
-        location.setCapacity(30);
-        LocationType locationType = new LocationType();
-        locationType.setId(1L);
-        locationType.setType("Classroom");
-        location.setLocationType(locationType);
-        AuditData auditData = new AuditData();
-        auditData.setCreatedOn(LocalDateTime.now());
-        auditData.setUpdatedOn(LocalDateTime.now());
-        auditData.setCreatedBy("admin");
-        auditData.setUpdatedBy("admin");
-        location.setAuditData(auditData);
-        return location;
-    }
+    @Test
+    void whenGetLocationById_withInvalidId_thenThrowException() {
+        when(locationRepository.findById(1L)).thenReturn(Optional.empty());
 
-    private LocationDTO createLocationDTO() {
-        LocationDTO locationDTO = new LocationDTO();
-        locationDTO.setId(1L);
-        locationDTO.setName("Room 101");
-        locationDTO.setCapacity(30);
-        locationDTO.setLocationTypeId(1L);
-        AuditData auditData = new AuditData();
-        auditData.setCreatedOn(LocalDateTime.now());
-        auditData.setUpdatedOn(LocalDateTime.now());
-        auditData.setCreatedBy("admin");
-        auditData.setUpdatedBy("admin");
-        return locationDTO;
+        assertThrows(ResourceNotFoundException.class, () -> {
+            locationService.getLocationById(1L);
+        });
     }
 }

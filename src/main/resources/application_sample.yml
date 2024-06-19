@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active: dev
+
   application:
     name: UniAttendanceSystem
     seed: true    # seed must be true at least once, after that you can set it to false
@@ -16,7 +19,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: root
     url: jdbc:mysql://localhost:3306/cs544_attendance?createDatabaseIfNotExist=true
     hikari:
       maximum-pool-size: 10
