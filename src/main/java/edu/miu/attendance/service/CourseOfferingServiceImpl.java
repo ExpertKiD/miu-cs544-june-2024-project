@@ -14,11 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseOfferingServiceImpl implements CourseOfferingService {
@@ -37,6 +38,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
     @Autowired
     private SessionRepository sessionRepository;
+
     @Autowired
     private StudentRepository studentRepository;
 
@@ -45,7 +47,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     public CourseOfferingDto findById(long id) {
-        CourseOffering courseOffering = courseOfferingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course doesn't exit!"));
+        CourseOffering courseOffering = courseOfferingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("CourseOffering doesn't exit!"));
         ;
         return modelMapper.map(courseOffering, CourseOfferingDto.class);
     }
@@ -134,5 +136,11 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
 
         return attendanceDTO;
+    }
+
+    @Override
+    public List<CourseOfferingDto> findByDate(String date) {
+        List<CourseOffering> resultData = courseOfferingRepository.findAllCourseOfferingByDate(LocalDate.parse(date));
+        return resultData.stream().map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class)).collect(Collectors.toList());
     }
 }

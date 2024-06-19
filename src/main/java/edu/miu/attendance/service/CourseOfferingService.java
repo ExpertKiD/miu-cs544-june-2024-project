@@ -5,6 +5,8 @@ import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface CourseOfferingService {
 
     Page<CourseOfferingDto> findAll(Pageable pageable);
@@ -16,4 +18,6 @@ public interface CourseOfferingService {
     CourseOfferingDto deleteCourseOffering(long id);
 
     CourseOfferingStudentAttendanceDTO getCourseOfferingAttendanceByStudentId(String studentId, Long courseOfferingId);
+
+    List<CourseOfferingDto> findByDate(String date);
 }
