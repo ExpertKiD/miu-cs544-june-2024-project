@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/student-view")
 public class AttendanceRecordController {
@@ -17,9 +15,7 @@ public class AttendanceRecordController {
     private AttendanceRecordService attendanceService;
 
     @GetMapping("/attendance-records")
-    public Page<AttendanceRecordDTO> getAttendanceRecords(Principal principal, Pageable pageable) {
-        String studentId = principal.getName();
-        Long studentIdAsLong = Long.valueOf(studentId);  // Converting it to Long if needed
-        return attendanceService.getAttendanceRecordsForStudent(studentIdAsLong, pageable);
+    public Page<AttendanceRecordDTO> getAttendanceRecords(@RequestParam Long studentId, Pageable pageable) {
+        return attendanceService.getAttendanceRecordsForStudent(studentId, pageable);
     }
 }
