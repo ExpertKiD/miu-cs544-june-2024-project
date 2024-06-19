@@ -7,10 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/sys-admin/locations")
+@RequestMapping("/api/v1/sys-admin/locations")
 public class LocationController {
 
     @Autowired
