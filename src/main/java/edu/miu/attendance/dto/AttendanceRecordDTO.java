@@ -11,4 +11,5 @@ public class AttendanceRecordDTO {
     private String locationName;
     private String locationType;
     private String courseOfferingName;
+    private Long sessionId;
 }

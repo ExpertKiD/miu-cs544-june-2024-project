@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/student-view")
+@RequestMapping("api/v1/student-view")
 public class AttendanceRecordController {
 
     @Autowired

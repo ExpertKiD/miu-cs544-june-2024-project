@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sys-admin/location-types")
+@RequestMapping("/api/v1/sys-admin/location-types")
 public class LocationTypeController {
 
     @Autowired

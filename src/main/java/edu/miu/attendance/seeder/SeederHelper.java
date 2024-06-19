@@ -218,9 +218,8 @@ public class SeederHelper {
 
     void addFaculties() {
         Map<RoleType, Role> rolesMap = roleRepository.findAll().stream()
-                .filter(role -> role.getRoleType() == RoleType.FACULTY)
+                .filter(role -> role.getRoleType() == RoleType.FACULTY || role.getRoleType() == RoleType.ADMIN)
                 .collect(Collectors.toMap(Role::getRoleType, role -> role));
-
 
         // Initialize faculties
         Faculty f1 = new Faculty();
@@ -258,6 +257,7 @@ public class SeederHelper {
         f3.setEmailAddress("psalek@miu.edu");
         f3.setGenderType(GenderType.MALE);
         f3.getRoles().add(rolesMap.get(RoleType.FACULTY));
+        f3.getRoles().add(rolesMap.get(RoleType.ADMIN));
 
         Faculty f4 = new Faculty();
         f4.setUsername("nnajeeb");

@@ -81,4 +81,14 @@ public class StudentServiceImpl implements StudentService {
 
         studentRepository.deleteByStudentId(student.getStudentId());
     }
+
+    @Override
+    public StudentDTO getStudentByUsername(String username) {
+        var student =
+                studentRepository.findStudentByUsername(username).orElseThrow(
+                        () -> new ResourceNotFoundException("Student with username #" + username + " doesn't exist")
+                );
+
+        return modelMapper.map(student, StudentDTO.class);
+    }
 }
