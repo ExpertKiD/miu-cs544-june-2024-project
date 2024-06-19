@@ -22,7 +22,9 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseOfferingServiceImpl implements CourseOfferingService {
@@ -50,7 +52,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     public CourseOfferingDto findById(long id) {
-        CourseOffering courseOffering=courseOfferingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course doesn't exit!"));;
+        CourseOffering courseOffering=courseOfferingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("CourseOffering doesn't exit!"));
         return modelMapper.map(courseOffering, CourseOfferingDto.class);
     }
 
@@ -110,6 +112,14 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
                 "on cof.course_id =  c.id\n" +
                 "where  cof.id = ?\n" +
                 "order by atd.ScanDateTime asc;";
-        return jdbcTemplate.query(sql,  new Object[] {id },new AttendanceRecordDTOMapper());
+        return jdbcTemplate.query(sql, new Object[]{id}, new AttendanceRecordDTOMapper());
+    }
+
+
+
+    public List<CourseOfferingDto> findByDate(String date) {
+        List<CourseOffering> resultData=courseOfferingRepository.findAllCourseOfferingByDate(LocalDate.parse(date));
+        return resultData.stream().map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class)).collect(Collectors.toList());
+
     }
 }

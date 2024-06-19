@@ -14,4 +14,5 @@ public interface CourseOfferingService {
     CourseOfferingDto saveCourseOffering(CourseOfferingDto courseOfferingDto,Long courseOfferingId);
     CourseOfferingDto deleteCourseOffering(long id);
     List<AttendanceRecordDTO> attendanceExcelData(Long id);
+    List<CourseOfferingDto> findByDate(String date) ;
 }

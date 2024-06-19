@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class CourseOfferingController {
@@ -53,6 +54,7 @@ public class CourseOfferingController {
         return ResponseEntity.ok(courseOfferingDto);
     }
 
+
     @GetMapping("/admin-view/course-offerings/{offeringId}/attendance")
     public ResponseEntity<String> downloadAttendanceRecordXml(@PathVariable long offeringId){
         List<AttendanceRecordDTO> data = courseOfferingService.attendanceExcelData(offeringId);
@@ -64,6 +66,14 @@ public class CourseOfferingController {
         return ResponseEntity.ok("Excel file generated and saved to Desktop");
     }
 
+
+
+
+    @GetMapping("/admin-view/course-offerings")
+    public ResponseEntity<?> getCourseOfferingsById(@RequestParam("date") String date){
+        List<CourseOfferingDto> courseOfferingDto=courseOfferingService.findByDate(date);
+        return ResponseEntity.ok(courseOfferingDto);
+    }
 
 
 }
