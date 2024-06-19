@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LocationControllerTests {
+class LocationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
