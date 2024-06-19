@@ -4,17 +4,22 @@ import edu.miu.attendance.domain.Course;
 import edu.miu.attendance.domain.CourseOffering;
 import edu.miu.attendance.domain.Faculty;
 import edu.miu.attendance.domain.Session;
+import edu.miu.attendance.dto.AttendanceRecordDTO;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.CourseOfferingRepository;
 import edu.miu.attendance.repository.CourseRepository;
 import edu.miu.attendance.repository.FacultyRepository;
 import edu.miu.attendance.repository.SessionRepository;
+import edu.miu.attendance.utility.AttendanceRecordDTOMapper;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +41,9 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
     @Autowired
     private SessionRepository sessionRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public Page<CourseOfferingDto> findAll(Pageable pageable) {
         return courseOfferingRepository.findAll(pageable).map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class));
@@ -79,5 +87,29 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
         courseOfferingRepository.deleteById(id);
 
         return modelMapper.map(deletedData, CourseOfferingDto.class);
+    }
+
+    @Override
+    public List<AttendanceRecordDTO> attendanceExcelData(Long id) {
+        String sql = "select p.firstName,p.lastName,s.studentid, fp.firstName As facultyFirstName,fp.lastName As facultyLastName,c.CourseCode,c.CourseName,c.department,c.credits,atd.ScanDateTime,l.name,lt.type  from CourseOffering cof \n" +
+                "join AttendanceRecord atd\n" +
+                "on cof.id = atd.courseOfferingId\n" +
+                "join Faculty f\n" +
+                "on cof.faculty_id =  f.id\n" +
+                "join Person fp\n" +
+                "on f.id = fp.id\n" +
+                "join Student s\n" +
+                "on atd.StudentId = s.id\n" +
+                "join Person p\n" +
+                "on s.id = p.id\n" +
+                "join Location l\n" +
+                "on atd.LocationId = l.id\n" +
+                "join LocationType lt\n" +
+                "on l.type_id = lt.id\n" +
+                "join Course c\n" +
+                "on cof.course_id =  c.id\n" +
+                "where  cof.id = ?\n" +
+                "order by atd.ScanDateTime asc;";
+        return jdbcTemplate.query(sql,  new Object[] {id },new AttendanceRecordDTOMapper());
     }
 }

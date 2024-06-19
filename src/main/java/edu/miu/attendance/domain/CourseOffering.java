@@ -21,6 +21,9 @@ public class CourseOffering {
     @Column(name = "capacity")
     private int capacity;
 
+    @Column(name="grade")
+    private String grade;
+
     @Column(name = "Room")
     private String room;
 

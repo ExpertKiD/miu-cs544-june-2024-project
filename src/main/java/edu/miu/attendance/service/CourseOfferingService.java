@@ -1,8 +1,11 @@
 package edu.miu.attendance.service;
 
+import edu.miu.attendance.dto.AttendanceRecordDTO;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface CourseOfferingService {
 
@@ -10,4 +13,5 @@ public interface CourseOfferingService {
     CourseOfferingDto findById(long id) ;
     CourseOfferingDto saveCourseOffering(CourseOfferingDto courseOfferingDto,Long courseOfferingId);
     CourseOfferingDto deleteCourseOffering(long id);
+    List<AttendanceRecordDTO> attendanceExcelData(Long id);
 }
