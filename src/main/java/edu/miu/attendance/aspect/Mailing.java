@@ -10,15 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @Aspect
 @Configuration
-@Async
+@EnableAsync
 public class Mailing {
 
     @Autowired
     JmsTemplate jmsTemplate;
 
+    @Async
     @AfterReturning("execution(* edu.miu.attendance.service.*.save*(..))")
     public void afterSave(JoinPoint joinPoint) throws JsonProcessingException {
         MailingDto dto=new MailingDto("Saving data", joinPoint.getSignature().getName(), "123","aaa");
@@ -27,6 +29,7 @@ public class Mailing {
         jmsTemplate.convertAndSend("mail-sending",dtoAsString);
     }
 
+    @Async
     @AfterReturning("execution(* edu.miu.attendance.service.*.delete*(..))")
     public void afterDelete(JoinPoint joinPoint) throws JsonProcessingException {
         MailingDto dto=new MailingDto("Deleting data", joinPoint.getSignature().getName(), "123","aaa");
