@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StudentCourse {
+public class StudentCourseDTO {
     private String code;
     private String name;
     private String description;
