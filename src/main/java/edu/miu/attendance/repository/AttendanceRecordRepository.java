@@ -8,3 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord, Long> {
     Page<AttendanceRecord> findByStudentId(Long studentId, Pageable pageable);
 }
+
