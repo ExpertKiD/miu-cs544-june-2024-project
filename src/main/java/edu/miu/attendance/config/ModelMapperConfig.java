@@ -9,18 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ModelMapperConfig {
-
-    @Bean("modelMapper")
-    public ModelMapper getModelMapper(){
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<AttendanceRecord, AttendanceRecordDTO>() {
-            @Override
-            protected void configure() {
-                map().setLocationName(source.getLocation().getName());
-                map().setLocationType(source.getLocation().getLocationType().getType());
-                map().setCourseOfferingName(source.getCourseOffering().getCourse().getName());
-            }
-        });
-        return modelMapper;
-    }
+@Bean("modelMapper")
+public ModelMapper getModelMapper(){
+    return new ModelMapper();
+}
 }
