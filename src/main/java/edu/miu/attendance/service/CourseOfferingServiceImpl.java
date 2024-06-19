@@ -43,7 +43,8 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
     private StudentRepository studentRepository;
 
     public Page<CourseOfferingDto> findAll(Pageable pageable) {
-        return courseOfferingRepository.findAll(pageable).map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class));
+        return courseOfferingRepository.findAll(pageable)
+                .map(courseOffering -> modelMapper.map(courseOffering, CourseOfferingDto.class));
     }
 
     public CourseOfferingDto findById(long id) {

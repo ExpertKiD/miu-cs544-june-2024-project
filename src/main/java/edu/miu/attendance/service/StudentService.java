@@ -15,5 +15,8 @@ public interface StudentService {
 
     StudentDTO updateStudent(String studentId, StudentDTO studentDTO);
 
+    StudentDTO getStudentWithCourses(String studentId);
+
     void deleteStudentByStudentId(String studentId);
+
 }

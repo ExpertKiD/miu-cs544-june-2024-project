@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 public class AttendanceRecordDTO {
     private Long id;
     private LocalDateTime scanDateTime;
+    private String locationName;
+    private String locationType;
+    private String courseOfferingName;
     private Long sessionId;
-
 }
