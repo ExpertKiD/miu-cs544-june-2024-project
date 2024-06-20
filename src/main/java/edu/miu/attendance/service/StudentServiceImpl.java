@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+
 @Service()
 public class StudentServiceImpl implements StudentService {
     @Autowired
@@ -107,7 +108,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
-
     @Override
     public StudentDTO getStudentByUsername(String username) {
         var student =
@@ -117,12 +117,14 @@ public class StudentServiceImpl implements StudentService {
 
         return modelMapper.map(student, StudentDTO.class);
 
+
     }
 
     @Override
     public Optional<Student> studentByUsername(String username) {
 
         return studentRepository.findStudentByUsername(username);
+
     }
 
 }

@@ -20,6 +20,8 @@ public interface CourseOfferingRepository extends JpaRepository<CourseOffering, 
     @Query("SELECT cf FROM CourseOffering cf JOIN cf.sessions s WHERE s.sessionDate = :date")
     List<CourseOffering> findAllCourseOfferingByDate(@Param("date") LocalDate date);
 
+
     List<CourseOffering>findByCourse(Course course);
+
 
 }
