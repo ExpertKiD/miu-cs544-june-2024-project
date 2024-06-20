@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -58,7 +59,8 @@ class LocationControllerTest {
 
     @Test
     void testGetAllLocations() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/sys-admin/locations")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/sys-admin/locations")
+                        .with(httpBasic("psalek", "qwerty"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].name").value("Test Location"))

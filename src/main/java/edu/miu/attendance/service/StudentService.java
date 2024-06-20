@@ -31,4 +31,5 @@ public interface StudentService {
 
     Optional<Student> studentByUsername(String username);
 
+    List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId);
 }

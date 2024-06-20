@@ -32,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private ModelMapper modelMapper;
 
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -118,6 +119,15 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentDTO.class);
 
 
+    }
+
+    @Override
+    public List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId) {
+        return
+                studentRepository.findStudentsByCoursesRegistrationForCourseOfferingId(courseOfferingId)
+                        .stream()
+                        .map((element) -> modelMapper.map(element, StudentDTO.class))
+                        .toList();
     }
 
     @Override

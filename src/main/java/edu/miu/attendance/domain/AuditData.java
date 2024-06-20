@@ -14,8 +14,7 @@ public class AuditData {
     @Column(updatable = false)
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
-    private String updatedBy ="";
-    @Column(nullable = false, updatable = false)
+    private String updatedBy = "";
     private String createdBy = "";
 
     @PrePersist
