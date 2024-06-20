@@ -1,6 +1,5 @@
 package edu.miu.attendance.utility;
 
-import edu.miu.attendance.dto.AttendanceRecordDTO;
 import edu.miu.attendance.dto.StudentCourseDTO;
 import org.springframework.jdbc.core.RowMapper;
 

@@ -1,6 +1,6 @@
 package edu.miu.attendance.utility;
 
-import edu.miu.attendance.dto.AttendanceRecordDTO;
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-public class AttendanceRecordDTOMapper implements RowMapper<AttendanceRecordDTO> {
+public class AttendanceRecordDTOMapper implements RowMapper<AttendanceRecordExcelDTO> {
     @Override
-    public AttendanceRecordDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public AttendanceRecordExcelDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         String studentid = rs.getString("studentid");
          String firstName = rs.getString("firstName");
          String lastName = rs.getString("lastName");
@@ -26,7 +26,7 @@ public class AttendanceRecordDTOMapper implements RowMapper<AttendanceRecordDTO>
         String type = rs.getString("type");
 
 
-        return new AttendanceRecordDTO(studentid,firstName,lastName,
+        return new AttendanceRecordExcelDTO(studentid,firstName,lastName,
                 facultyFirstNam,facultyLastName,CourseCode,CourseName,department,credits,scanDateTime,name,type);
     }
 }

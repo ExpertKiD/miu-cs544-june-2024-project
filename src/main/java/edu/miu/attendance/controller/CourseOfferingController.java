@@ -1,6 +1,6 @@
 package edu.miu.attendance.controller;
 
-import edu.miu.attendance.dto.AttendanceRecordDTO;
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
 import edu.miu.attendance.dto.StudentDTO;
@@ -66,7 +66,7 @@ public class CourseOfferingController {
 
     @GetMapping("/admin-view/course-offerings/{offeringId}/attendance")
     public ResponseEntity<String> downloadAttendanceRecordXml(@PathVariable long offeringId){
-        List<AttendanceRecordDTO> data = courseOfferingService.attendanceExcelData(offeringId);
+        List<AttendanceRecordExcelDTO> data = courseOfferingService.attendanceExcelData(offeringId);
         try {
             ExcelUtil.generateExcel(data);
         } catch (IOException e) {

@@ -1,20 +1,19 @@
 package edu.miu.attendance.utility;
 
-import edu.miu.attendance.dto.AttendanceRecordDTO;
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ExcelUtil {
-    public static void generateExcel(List<AttendanceRecordDTO> data) throws IOException {
+    public static void generateExcel(List<AttendanceRecordExcelDTO> data) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Joined Data");
 
@@ -50,7 +49,7 @@ public class ExcelUtil {
 
             // Create data rows
             int rowNum = 1;
-            for (AttendanceRecordDTO dto : data) {
+            for (AttendanceRecordExcelDTO dto : data) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum-1);
                row.createCell(1).setCellValue((dto.getStudentid()));

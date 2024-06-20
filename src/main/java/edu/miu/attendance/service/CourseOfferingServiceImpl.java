@@ -8,7 +8,7 @@ import edu.miu.attendance.domain.Session;
 
 import edu.miu.attendance.domain.*;
 
-import edu.miu.attendance.dto.AttendanceRecordDTO;
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
 import edu.miu.attendance.dto.SessionDto;
@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -111,7 +109,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
 
-    public List<AttendanceRecordDTO> attendanceExcelData(Long id) {
+    public List<AttendanceRecordExcelDTO> attendanceExcelData(Long id) {
         String sql = "select p.firstName,p.lastName,s.studentid, fp.firstName As facultyFirstName,fp.lastName As facultyLastName,c.CourseCode,c.CourseName,c.department,c.credits,atd.ScanDateTime,l.name,lt.type  from CourseOffering cof \n" +
                 "join AttendanceRecord atd\n" +
                 "on cof.id = atd.courseOfferingId\n" +
@@ -174,7 +172,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
         attendanceDTO.setAttendance(attendanceRecords
                 .stream()
-                .map((element) -> modelMapper.map(element, AttendanceRecordDTO.class))
+                .map((element) -> modelMapper.map(element, AttendanceRecordExcelDTO.class))
                 .toList());
 
         attendanceDTO.setSessions(activeSessions

@@ -1,31 +1,15 @@
 package edu.miu.attendance.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Data
-@AllArgsConstructor
-@Getter
-@Setter
 public class AttendanceRecordDTO {
-
-    private String studentid;
-    private String firstName;
-    private String lastName;
-    private String facultyFirstName;
-    private String facultyLastName;
-    private String CourseCode;
-    private String CourseName;
-    private String department;
-    private double credits;
+    private Long id;
     private LocalDateTime scanDateTime;
-    private String name;
-    private String type;
-
-
+    private String locationName;
+    private String locationType;
+    private String courseOfferingName;
+    private Long sessionId;
 }
