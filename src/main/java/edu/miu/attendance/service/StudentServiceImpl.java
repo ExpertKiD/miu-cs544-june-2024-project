@@ -20,7 +20,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Service()
@@ -106,6 +106,8 @@ public class StudentServiceImpl implements StudentService {
         return jdbcTemplate.query(sql, new Object[]{studentId}, new StudentCourseDTOMapper());
     }
 
+
+
     @Override
     public StudentDTO getStudentByUsername(String username) {
         var student =
@@ -116,4 +118,11 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentDTO.class);
 
     }
+
+    @Override
+    public Optional<Student> studentByUsername(String username) {
+
+        return studentRepository.findStudentByUsername(username);
+    }
+
 }
