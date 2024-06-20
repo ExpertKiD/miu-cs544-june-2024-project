@@ -34,4 +34,12 @@ public class MessageUtility {
         message.setMessage(name+" "+ "Delete "+ "Successfully." );
         return message;
     }
+
+
+    public MessageResponse codeValidationMessage (String courseCode) {
+        MessageResponse message = new MessageResponse();
+        message.setStatus("failed");
+        message.setMessage(courseCode+" "+ "Course Code Already Exists." );
+        return message;
+    }
 }
