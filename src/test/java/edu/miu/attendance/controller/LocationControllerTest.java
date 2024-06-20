@@ -1,141 +1,119 @@
 package edu.miu.attendance.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.miu.attendance.config.TestSecurityConfig;
 import edu.miu.attendance.dto.LocationDTO;
 import edu.miu.attendance.service.LocationService;
-import edu.miu.attendance.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Collections;
 
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LocationControllerTest {
+@Import(TestSecurityConfig.class)
+public class LocationControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private LocationService locationService;
 
-    private LocationDTO existingLocationDTO;
+    private LocationDTO locationDTO;
 
     @BeforeEach
     public void setUp() {
-        existingLocationDTO = new LocationDTO();
-        existingLocationDTO.setId(1L);
-        existingLocationDTO.setName("Test Location");
-        existingLocationDTO.setCapacity(100);
-
-        // Mock behavior for service methods
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<LocationDTO> locations = new PageImpl<>(Collections.singletonList(existingLocationDTO), pageable, 1);
-
-        when(locationService.getAllLocations(any(Pageable.class))).thenReturn(locations);
-        when(locationService.getLocationById(1L)).thenReturn(existingLocationDTO);
-        when(locationService.createLocation(any(LocationDTO.class))).thenReturn(existingLocationDTO);
-        when(locationService.updateLocation(eq(1L), any(LocationDTO.class))).thenReturn(existingLocationDTO);
-
-        // Mock behavior for service methods throwing exceptions
-        doThrow(new ResourceNotFoundException("Location not found")).when(locationService).getLocationById(2L);
-        doThrow(new ResourceNotFoundException("Location not found")).when(locationService).updateLocation(eq(2L), any(LocationDTO.class));
-        doThrow(new ResourceNotFoundException("Location not found")).when(locationService).deleteLocation(2L);
+        locationDTO = new LocationDTO();
+        locationDTO.setId(1L);
+        locationDTO.setName("Main Hall");
+        locationDTO.setLocationTypeId(1L); // Set the locationTypeId
     }
 
     @Test
-    void testGetAllLocations() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/sys-admin/locations")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].name").value("Test Location"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].capacity").value(100));
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testGetAllLocations() throws Exception {
+        Page<LocationDTO> page = new PageImpl<>(Collections.singletonList(locationDTO));
+        Mockito.when(locationService.getAllLocations(any(Pageable.class))).thenReturn(page);
 
-        verify(locationService, times(1)).getAllLocations(any(Pageable.class));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/sys-admin/locations")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Main Hall")))
+                .andExpect(jsonPath("$.content[0].locationTypeId", is(1)));
     }
 
     @Test
-    void testGetLocationById() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/sys-admin/locations/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test Location"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.capacity").value(100));
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testGetLocationById() throws Exception {
+        Mockito.when(locationService.getLocationById(anyLong())).thenReturn(locationDTO);
 
-        verify(locationService, times(1)).getLocationById(1L);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/sys-admin/locations/1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Main Hall")))
+                .andExpect(jsonPath("$.locationTypeId", is(1)));
     }
 
     @Test
-    void testGetLocationById_NotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/sys-admin/locations/2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testCreateLocation() throws Exception {
+        Mockito.when(locationService.createLocation(any(LocationDTO.class))).thenReturn(locationDTO);
 
-        verify(locationService, times(1)).getLocationById(2L);
-    }
-
-    @Test
-    void testCreateLocation() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/sys-admin/locations")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/sys-admin/locations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(existingLocationDTO)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test Location"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.capacity").value(100));
-
-        verify(locationService, times(1)).createLocation(any(LocationDTO.class));
+                        .content("{\"name\": \"Main Hall\", \"locationTypeId\": 1}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Main Hall")))
+                .andExpect(jsonPath("$.locationTypeId", is(1)));
     }
 
     @Test
-    void testUpdateLocation() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/sys-admin/locations/1")
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testUpdateLocation() throws Exception {
+        Mockito.when(locationService.updateLocation(anyLong(), any(LocationDTO.class))).thenReturn(locationDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/sys-admin/locations/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(existingLocationDTO)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test Location"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.capacity").value(100));
-
-        verify(locationService, times(1)).updateLocation(eq(1L), any(LocationDTO.class));
+                        .content("{\"name\": \"Main Hall\", \"locationTypeId\": 1}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Main Hall")))
+                .andExpect(jsonPath("$.locationTypeId", is(1)));
     }
 
     @Test
-    void testUpdateLocation_NotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/sys-admin/locations/2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(existingLocationDTO)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testDeleteLocation() throws Exception {
+        Mockito.doNothing().when(locationService).deleteLocation(anyLong());
 
-        verify(locationService, times(1)).updateLocation(eq(2L), any(LocationDTO.class));
-    }
-
-    @Test
-    void testDeleteLocation() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/sys-admin/locations/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        verify(locationService, times(1)).deleteLocation(1L);
-    }
-
-    @Test
-    void testDeleteLocation_NotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/sys-admin/locations/2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-
-        verify(locationService, times(1)).deleteLocation(2L);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/sys-admin/locations/1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

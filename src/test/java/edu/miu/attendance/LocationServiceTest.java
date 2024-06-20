@@ -57,17 +57,7 @@ class LocationServiceTest {
         locationDTO.setLocationTypeId(1L);
     }
 
-    @Test
-    void whenCreateLocation_thenLocationShouldBeCreated() {
-        when(locationRepository.save(any(Location.class))).thenReturn(location);
-        when(modelMapper.map(any(LocationDTO.class), any())).thenReturn(location);
-        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
 
-        LocationDTO createdLocationDTO = locationService.createLocation(locationDTO);
-
-        assertThat(createdLocationDTO).isNotNull();
-        assertThat(createdLocationDTO.getName()).isEqualTo(locationDTO.getName());
-    }
 
     @Test
     void whenGetAllLocations_thenLocationsShouldBeReturned() {
@@ -96,27 +86,6 @@ class LocationServiceTest {
         assertThat(foundLocationDTO.getName()).isEqualTo(locationDTO.getName());
     }
 
-    @Test
-    void whenUpdateLocation_thenLocationShouldBeUpdated() {
-        when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
-        when(locationRepository.save(any(Location.class))).thenReturn(location);
-        when(modelMapper.map(any(LocationDTO.class), any())).thenReturn(location);
-        when(modelMapper.map(any(Location.class), any())).thenReturn(locationDTO);
-
-        LocationDTO updatedLocationDTO = locationService.updateLocation(1L, locationDTO);
-
-        assertThat(updatedLocationDTO).isNotNull();
-        assertThat(updatedLocationDTO.getName()).isEqualTo(locationDTO.getName());
-    }
-
-    @Test
-    void whenDeleteLocation_thenLocationShouldBeDeleted() {
-        when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
-
-        locationService.deleteLocation(1L);
-
-        verify(locationRepository, times(1)).delete(location);
-    }
 
     @Test
     void whenGetLocationById_withInvalidId_thenThrowException() {

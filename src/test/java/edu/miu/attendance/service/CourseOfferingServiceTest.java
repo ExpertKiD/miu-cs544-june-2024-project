@@ -1,29 +1,25 @@
 package edu.miu.attendance.service;
 
-import edu.miu.attendance.domain.Course;
-import edu.miu.attendance.domain.CourseOffering;
-import edu.miu.attendance.domain.Faculty;
-import edu.miu.attendance.domain.Session;
+import edu.miu.attendance.domain.*;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import edu.miu.attendance.exception.ResourceNotFoundException;
-import edu.miu.attendance.repository.CourseOfferingRepository;
-import edu.miu.attendance.repository.CourseRepository;
-import edu.miu.attendance.repository.FacultyRepository;
-import edu.miu.attendance.repository.SessionRepository;
+import edu.miu.attendance.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class CourseOfferingServiceTest {
 
     @Mock
@@ -46,14 +43,44 @@ class CourseOfferingServiceTest {
     private FacultyRepository facultyRepository;
 
     @Mock
+    private StudentRepository studentRepository;
+
+    @Mock
     private SessionRepository sessionRepository;
 
     @InjectMocks
     private CourseOfferingServiceImpl courseOfferingService;
 
+    private Student student;
+    private CourseOffering courseOffering;
+    private Session activeSession;
+    private AttendanceRecord attendanceRecord;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        // Create mock student
+        student = new Student();
+        student.setStudentId("student1");
+
+        // Create mock course offering
+        courseOffering = new CourseOffering();
+        courseOffering.setId(1L);
+        courseOffering.setSessions(new ArrayList<>()); // Initialize empty session list
+
+        // Create active session
+        activeSession = new Session();
+        activeSession.setId(1L);
+        activeSession.setSessionDate(LocalDate.now());
+        activeSession.setEndTime(LocalTime.now().plusHours(1));
+
+        courseOffering.getSessions().add(activeSession);
+
+        // Create mock attendance record
+        attendanceRecord = new AttendanceRecord();
+        attendanceRecord.setId(1L);
+        attendanceRecord.setSession(activeSession);
+        attendanceRecord.setCourseOffering(courseOffering);
+        attendanceRecord.setStudent(student);
     }
 
     @Test
@@ -114,7 +141,7 @@ class CourseOfferingServiceTest {
         when(courseOfferingRepository.save(any(CourseOffering.class))).thenReturn(courseOffering);
         when(modelMapper.map(any(CourseOffering.class), eq(CourseOfferingDto.class))).thenReturn(courseOfferingDto);
 
-        CourseOfferingDto result = courseOfferingService.saveCourseOffering(courseOfferingDto, null);
+        CourseOfferingDto result = courseOfferingService.saveCourseOffering("psalek", courseOfferingDto, null);
 
         assertNotNull(result);
         verify(courseOfferingRepository, times(1)).save(courseOffering);
@@ -129,7 +156,7 @@ class CourseOfferingServiceTest {
         doNothing().when(courseOfferingRepository).deleteById(anyLong());
         when(modelMapper.map(any(CourseOffering.class), eq(CourseOfferingDto.class))).thenReturn(courseOfferingDto);
 
-        CourseOfferingDto result = courseOfferingService.deleteCourseOffering(1L);
+        CourseOfferingDto result = courseOfferingService.deleteCourseOffering("psalek" ,1L);
 
         assertNotNull(result);
         verify(courseOfferingRepository, times(1)).findById(1L);
@@ -140,7 +167,30 @@ class CourseOfferingServiceTest {
     void testDeleteCourseOffering_NotFound() {
         when(courseOfferingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> courseOfferingService.deleteCourseOffering(1L));
+        assertThrows(ResourceNotFoundException.class, () -> courseOfferingService.deleteCourseOffering("psalek",1L ));
         verify(courseOfferingRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetCourseOfferingAttendanceByStudentId_StudentNotFound() {
+        // Mock student repository method to return empty optional
+        when(studentRepository.findStudentByStudentId(anyString())).thenReturn(Optional.empty());
+
+        // Test for student not found
+        assertThrows(ResourceNotFoundException.class,
+                () -> courseOfferingService.getCourseOfferingAttendanceByStudentId("nonexistentStudent", 1L));
+    }
+
+    @Test
+    void testGetCourseOfferingAttendanceByStudentId_CourseOfferingNotEnrolled() {
+        // Mock student repository method
+        when(studentRepository.findStudentByStudentId(anyString())).thenReturn(Optional.of(student));
+
+        // Mock student's coursesRegistrations to return empty list (not enrolled in course offering)
+        student.setCoursesRegistrations(new ArrayList<>());
+
+        // Test for course offering not enrolled
+        assertThrows(ResourceNotFoundException.class,
+                () -> courseOfferingService.getCourseOfferingAttendanceByStudentId("student1", 1L));
     }
 }

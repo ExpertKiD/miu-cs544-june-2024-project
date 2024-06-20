@@ -17,7 +17,7 @@ import java.util.List;
 public interface CourseOfferingRepository extends JpaRepository<CourseOffering, Long> {
 
 
-    @Query("SELECT cf FROM CourseOffering cf JOIN cf.sessions s WHERE s.sessionDate = :date")
+    @Query("SELECT distinct cf FROM CourseOffering cf JOIN cf.sessions s WHERE s.sessionDate <= :date and s.sessionDate>=:date")
     List<CourseOffering> findAllCourseOfferingByDate(@Param("date") LocalDate date);
 
 
