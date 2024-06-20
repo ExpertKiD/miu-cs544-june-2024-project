@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -106,6 +107,31 @@ class StudentRepositoryIntegrationTest {
         // Assert the results
         assertEquals(1, result.size());
         assertEquals("ST1001", result.get(0).getStudentId());
+    }
+
+    @Test
+    void testGetFindStudentByUsername() {
+
+        // Creating a Student
+        Student student = new Student();
+        student.setFirstName("John");
+        student.setLastName("Doe");
+        student.setGenderType(GenderType.MALE); // Assuming GenderType is an enum
+        student.setBirthDate(LocalDate.of(1995, 5, 15));
+        student.setEmailAddress("john.doe@example.com");
+        student.setUsername("johndoe");
+        student.setPassword("password123");
+        student.setStudentId("ST1001");
+
+        studentRepository.save(student);
+
+        // Call the method
+        Optional<Student> std = studentRepository.findStudentByUsername(
+                "johndoe");
+
+        // Assert the results
+        assertTrue(std.isPresent());
+        assertEquals("ST1001", std.get().getStudentId());
     }
 
     private Student getStudentEntity() {
