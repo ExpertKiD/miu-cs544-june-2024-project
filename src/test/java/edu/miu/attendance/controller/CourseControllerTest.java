@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.miu.attendance.config.TestSecurityConfig;
 import edu.miu.attendance.dto.CourseDTO;
 import edu.miu.attendance.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 @WebMvcTest(CourseController.class)
+@Import(TestSecurityConfig.class)
 public class CourseControllerTest {
 
     @Autowired

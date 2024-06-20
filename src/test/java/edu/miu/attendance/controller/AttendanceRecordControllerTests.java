@@ -33,6 +33,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,34 +72,21 @@ public class AttendanceRecordControllerTests {
 
         when(attendanceRecordService.getAttendanceRecordsForStudent("1", PageRequest.of(0, 10)))
                 .thenReturn(attendanceRecordsPage);
-
+    }
     @MockBean
     private StudentService studentService;
 
     private AttendanceRecordDTO attendanceRecordDTO;
     private StudentDTO studentDTO;
 
-    @BeforeEach
-    public void setUp() {
-        attendanceRecordDTO = new AttendanceRecordDTO();
-        attendanceRecordDTO.setId(1L);
-        attendanceRecordDTO.setCourseOfferingName("Software Engineering");
-        attendanceRecordDTO.setLocationName("Main Hall");
-        attendanceRecordDTO.setLocationType("Lecture");
 
-        studentDTO = new StudentDTO();
-        studentDTO.setStudentId("1");
-        studentDTO.setFirstName("John");
-        studentDTO.setLastName("Doe");
-
-    }
 
     @Test
     @WithMockUser(username = "johndoe", password = "password", roles = "STUDENT")
     public void testGetAttendanceRecords() throws Exception {
         Page<AttendanceRecordDTO> page = new PageImpl<>(Collections.singletonList(attendanceRecordDTO));
-        Mockito.when(studentService.getStudentByUsername(anyString())).thenReturn(studentDTO);
-        Mockito.when(attendanceRecordService.getAttendanceRecordsForStudent(anyString(), any(Pageable.class))).thenReturn(page);
+        when(studentService.getStudentByUsername(anyString())).thenReturn(studentDTO);
+        when(attendanceRecordService.getAttendanceRecordsForStudent(anyString(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student-view/attendance-records")
                         .accept(MediaType.APPLICATION_JSON)

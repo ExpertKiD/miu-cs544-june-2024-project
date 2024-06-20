@@ -30,7 +30,7 @@ public interface StudentService {
     List<StudentCourseDTO> findCourseOfferingsByStudentId(Long studentId);
 
     Optional<Student> studentByUsername(String username);
-    
+
     List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId);
 
 }
