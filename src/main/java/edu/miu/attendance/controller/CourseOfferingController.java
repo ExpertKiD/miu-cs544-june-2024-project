@@ -1,21 +1,30 @@
 package edu.miu.attendance.controller;
 
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
+import edu.miu.attendance.dto.CourseOfferingDto;
+import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
+import edu.miu.attendance.dto.StudentDTO;
 import edu.miu.attendance.dto.*;
 import edu.miu.attendance.repository.StudentRepository;
 import edu.miu.attendance.service.CourseOfferingServiceImpl;
+import edu.miu.attendance.utility.ExcelUtil;
 import edu.miu.attendance.service.StudentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -24,8 +33,6 @@ public class CourseOfferingController {
     private CourseOfferingServiceImpl courseOfferingService;
     @Autowired
     private StudentService studentService;
-    @Autowired
-    private StudentRepository studentRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -61,6 +68,21 @@ public class CourseOfferingController {
         CourseOfferingDto courseOfferingDto = courseOfferingService.deleteCourseOffering(offeringId);
         return ResponseEntity.ok(courseOfferingDto);
     }
+
+
+    @GetMapping("/admin-view/course-offerings/{offeringId}/attendance")
+    public ResponseEntity<String> downloadAttendanceRecordXml(@PathVariable long offeringId){
+        List<AttendanceRecordExcelDTO> data = courseOfferingService.attendanceExcelData(offeringId);
+        try {
+            ExcelUtil.generateExcel(data);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving Excel file to Desktop");
+        }
+        return ResponseEntity.ok("Excel file generated and saved to Desktop");
+    }
+
+
+
 
     @GetMapping("/admin-view/course-offerings")
     public ResponseEntity<?> getCourseOfferingsById(@RequestParam("date") String date) {

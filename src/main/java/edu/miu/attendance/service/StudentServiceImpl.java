@@ -1,19 +1,27 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Student;
+import edu.miu.attendance.dto.StudentCourseDTO;
 import edu.miu.attendance.dto.CourseDTO;
 import edu.miu.attendance.dto.StudentDTO;
 import edu.miu.attendance.exception.ResourceAlreadyExistsException;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.repository.StudentRepository;
+import edu.miu.attendance.utility.AttendanceRecordDTOMapper;
+import edu.miu.attendance.utility.StudentCourseDTOMapper;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+
 
 @Service()
 public class StudentServiceImpl implements StudentService {
@@ -22,6 +30,11 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
 
     @Override
     @Transactional
@@ -83,6 +96,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<StudentCourseDTO> findCourseOfferingsByStudentId(Long studentId) {
+        String sql = "select c.CourseCode,c.CourseName,c.CourseDescription,c.credits as CourseCredit,cof.grade from CourseRegistration cr \n" +
+                "join CourseOffering cof\n" +
+                "on cr.CourseOfferingId = cof.id\n" +
+                "join Course c\n" +
+                "on cof.course_id = c.id\n" +
+                "where cr.StudentId =  ?";
+
+        return jdbcTemplate.query(sql, new Object[]{studentId}, new StudentCourseDTOMapper());
+    }
+
+    @Override
     public StudentDTO getStudentByUsername(String username) {
         var student =
                 studentRepository.findStudentByUsername(username).orElseThrow(
@@ -90,6 +115,7 @@ public class StudentServiceImpl implements StudentService {
                 );
 
         return modelMapper.map(student, StudentDTO.class);
+
     }
 
     @Override
