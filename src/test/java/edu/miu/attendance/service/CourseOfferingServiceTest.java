@@ -23,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,7 +113,7 @@ class CourseOfferingServiceTest {
         when(courseOfferingRepository.save(any(CourseOffering.class))).thenReturn(courseOffering);
         when(modelMapper.map(any(CourseOffering.class), eq(CourseOfferingDto.class))).thenReturn(courseOfferingDto);
 
-        CourseOfferingDto result = courseOfferingService.saveCourseOffering(courseOfferingDto, null);
+        CourseOfferingDto result = courseOfferingService.saveCourseOffering("psalek", courseOfferingDto, null);
 
         assertNotNull(result);
         verify(courseOfferingRepository, times(1)).save(courseOffering);
@@ -129,7 +128,7 @@ class CourseOfferingServiceTest {
         doNothing().when(courseOfferingRepository).deleteById(anyLong());
         when(modelMapper.map(any(CourseOffering.class), eq(CourseOfferingDto.class))).thenReturn(courseOfferingDto);
 
-        CourseOfferingDto result = courseOfferingService.deleteCourseOffering(1L);
+        CourseOfferingDto result = courseOfferingService.deleteCourseOffering("psalek" ,1L);
 
         assertNotNull(result);
         verify(courseOfferingRepository, times(1)).findById(1L);
@@ -140,7 +139,7 @@ class CourseOfferingServiceTest {
     void testDeleteCourseOffering_NotFound() {
         when(courseOfferingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> courseOfferingService.deleteCourseOffering(1L));
+        assertThrows(ResourceNotFoundException.class, () -> courseOfferingService.deleteCourseOffering("psalek",1L ));
         verify(courseOfferingRepository, times(1)).findById(1L);
     }
 }

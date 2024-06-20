@@ -45,21 +45,22 @@ public class CourseOfferingController {
     }
 
     @PostMapping("/sys-admin/course-offerings")
-    public ResponseEntity<?> createCourseOffering(@RequestBody CourseOfferingDto courseOfferingDto) {
-        CourseOfferingDto result = courseOfferingService.saveCourseOffering(courseOfferingDto, null);
+    public ResponseEntity<?> createCourseOffering(@RequestBody CourseOfferingDto courseOfferingDto, @AuthenticationPrincipal User currentUser) {
+        CourseOfferingDto result = courseOfferingService.saveCourseOffering(currentUser.getUsername(),courseOfferingDto, null);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/sys-admin/course-offerings/{offeringId}")
-    public ResponseEntity<?> updateCourseOffering(@PathVariable("offeringId") Long courseOfferingId, @RequestBody CourseOfferingDto courseOfferingDto) {
-        CourseOfferingDto result = courseOfferingService.saveCourseOffering(courseOfferingDto, courseOfferingId);
+    public ResponseEntity<?> updateCourseOffering(@PathVariable("offeringId") Long courseOfferingId, @RequestBody CourseOfferingDto courseOfferingDto, @AuthenticationPrincipal User currentUser) {
+        CourseOfferingDto result = courseOfferingService.saveCourseOffering(currentUser.getUsername(),courseOfferingDto, courseOfferingId);
         return ResponseEntity.ok(result);
     }
 
 
     @DeleteMapping("/sys-admin/course-offerings/{offeringId}")
-    public ResponseEntity<?> deleteCourseOffering(@PathVariable long offeringId) {
-        CourseOfferingDto courseOfferingDto = courseOfferingService.deleteCourseOffering(offeringId);
+    public ResponseEntity<?> deleteCourseOffering(@PathVariable long offeringId, @AuthenticationPrincipal User currentUser) {
+
+        CourseOfferingDto courseOfferingDto = courseOfferingService.deleteCourseOffering(currentUser.getUsername(),offeringId);
         return ResponseEntity.ok(courseOfferingDto);
     }
 
