@@ -4,6 +4,8 @@ import edu.miu.attendance.dto.StudentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface StudentService {
     StudentDTO addStudent(StudentDTO studentDTO);
 
@@ -19,4 +21,5 @@ public interface StudentService {
 
     void deleteStudentByStudentId(String studentId);
 
+    List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId);
 }

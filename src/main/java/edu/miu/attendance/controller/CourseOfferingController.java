@@ -1,11 +1,10 @@
 package edu.miu.attendance.controller;
 
-import edu.miu.attendance.dto.CourseOfferingDto;
-import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
-import edu.miu.attendance.dto.StudentDTO;
+import edu.miu.attendance.dto.*;
 import edu.miu.attendance.repository.StudentRepository;
 import edu.miu.attendance.service.CourseOfferingServiceImpl;
 import edu.miu.attendance.service.StudentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -25,6 +26,9 @@ public class CourseOfferingController {
     private StudentService studentService;
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/student-view/course-offerings/{offeringId}")
     public ResponseEntity<?> getCourseOfferingsById(@PathVariable long offeringId) {
@@ -78,6 +82,35 @@ public class CourseOfferingController {
                 );
 
         return ResponseEntity.ok(attendanceDTO);
+    }
+
+    @GetMapping("/admin-view/course-offerings/{courseOfferingId}")
+    public ResponseEntity<AdminCourseOfferingDto> getAdminViewCourseOfferingById(@PathVariable(
+            "courseOfferingId") Long courseOfferingId) {
+        CourseOfferingDto courseOfferingDto =
+                courseOfferingService.findById(courseOfferingId);
+
+        List<SessionDto> sessions =
+                courseOfferingDto.getSessions();
+
+        sessions.sort(Comparator.comparing(SessionDto::getSessionDate));
+
+        LocalDate startDate = sessions.get(0).getSessionDate();
+        LocalDate endDate = sessions.get(sessions.size() - 1).getSessionDate();
+
+        AdminCourseOfferingDto adminCourseOfferingDto =
+                new AdminCourseOfferingDto();
+
+        modelMapper.map(courseOfferingDto, adminCourseOfferingDto);
+
+        var students =
+                studentService.findStudentsByCoursesRegistrationForCourseOfferingId(courseOfferingId);
+
+        adminCourseOfferingDto.setStudents(students);
+        adminCourseOfferingDto.setStartDate(startDate);
+        adminCourseOfferingDto.setEndDate(endDate);
+
+        return ResponseEntity.ok(adminCourseOfferingDto);
     }
 
 }

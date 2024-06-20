@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service()
 public class StudentServiceImpl implements StudentService {
@@ -23,6 +22,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     @Transactional
     public StudentDTO addStudent(StudentDTO studentDTO) {
@@ -90,5 +90,14 @@ public class StudentServiceImpl implements StudentService {
                 );
 
         return modelMapper.map(student, StudentDTO.class);
+    }
+
+    @Override
+    public List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId) {
+        return
+                studentRepository.findStudentsByCoursesRegistrationForCourseOfferingId(courseOfferingId)
+                        .stream()
+                        .map((element) -> modelMapper.map(element, StudentDTO.class))
+                        .toList();
     }
 }
