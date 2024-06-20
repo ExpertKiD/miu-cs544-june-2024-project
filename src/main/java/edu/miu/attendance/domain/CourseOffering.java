@@ -27,10 +27,10 @@ public class CourseOffering {
     @Column(name = "Room")
     private String room;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Course course;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Faculty faculty;
 
     @ManyToMany(cascade = CascadeType.ALL)

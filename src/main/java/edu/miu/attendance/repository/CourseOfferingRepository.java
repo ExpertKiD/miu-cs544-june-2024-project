@@ -1,5 +1,6 @@
 package edu.miu.attendance.repository;
 
+import edu.miu.attendance.domain.Course;
 import edu.miu.attendance.domain.CourseOffering;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -18,5 +19,9 @@ public interface CourseOfferingRepository extends JpaRepository<CourseOffering, 
 
     @Query("SELECT distinct cf FROM CourseOffering cf JOIN cf.sessions s WHERE s.sessionDate <= :date and s.sessionDate>=:date")
     List<CourseOffering> findAllCourseOfferingByDate(@Param("date") LocalDate date);
+
+
+    List<CourseOffering>findByCourse(Course course);
+
 
 }
