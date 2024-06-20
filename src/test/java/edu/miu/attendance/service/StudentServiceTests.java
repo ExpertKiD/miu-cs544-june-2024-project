@@ -18,11 +18,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -157,6 +160,33 @@ class StudentServiceTests {
         student.setApplicantId("APP123");
         student.setStudentId("12345");
         return student;
+    }
+
+    @Test
+    public void testFindStudentsByCoursesRegistrationForCourseOfferingId() {
+        // Mock data
+        Student student1 = new Student();
+        student1.setStudentId("student1");
+
+        Student student2 = new Student();
+        student2.setStudentId("student2");
+
+        List<Student> students = new ArrayList<>();
+        students.add(student1);
+        students.add(student2);
+
+        // Mocking repository method
+        when(studentRepository.findStudentsByCoursesRegistrationForCourseOfferingId(anyLong()))
+                .thenReturn(students);
+
+        // Call the service method
+        List<StudentDTO> result =
+                studentService.findStudentsByCoursesRegistrationForCourseOfferingId(1L);
+
+        // Assert the result
+        assertEquals(2, result.size());
+        assertEquals("student1", result.get(0).getStudentId());
+        assertEquals("student2", result.get(1).getStudentId());
     }
 
     @TestConfiguration
