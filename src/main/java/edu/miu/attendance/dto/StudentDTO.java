@@ -17,5 +17,6 @@ public class StudentDTO {
     private String alternateID;
     private String applicantId;
     private String studentId;
+    private String username;
     private List<CourseDTO> courses;
 }
