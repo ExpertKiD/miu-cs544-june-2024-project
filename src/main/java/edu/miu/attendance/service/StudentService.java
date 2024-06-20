@@ -24,4 +24,5 @@ public interface StudentService {
 
     List<StudentCourseDTO> findCourseOfferingsByStudentId(Long studentId);
 
+    List<StudentDTO> findStudentsByCoursesRegistrationForCourseOfferingId(Long courseOfferingId);
 }
