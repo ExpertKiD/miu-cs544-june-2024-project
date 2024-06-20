@@ -13,8 +13,10 @@ public class StudentCourseDTOMapper implements RowMapper<StudentCourseDTO> {
          String name = rs.getString("CourseName");
          String description = rs.getString("CourseDescription");
          double credits = rs.getDouble("CourseCredit");
-         String grade = rs.getString("grade");
-
+        String grade = "NA";
+         if(rs.getString("grade")!=null) {
+              grade = rs.getString("grade");
+         }
         return new StudentCourseDTO(code,name,description,credits,grade);
     }
 }
