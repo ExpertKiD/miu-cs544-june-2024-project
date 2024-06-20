@@ -22,7 +22,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
+
 import static org.mockito.ArgumentMatchers.*;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,6 +54,7 @@ public class CourseOfferingControllerTest {
     public void testGetCourseOfferingsById() throws Exception {
         Mockito.when(courseOfferingService.findById(anyLong())).thenReturn(courseOfferingDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student-view/course-offerings/1")
+                        .with(httpBasic("johndoe", "password123"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
@@ -63,6 +69,7 @@ public class CourseOfferingControllerTest {
         Mockito.when(courseOfferingService.findAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/sys-admin/course-offerings")
+                        .with(httpBasic("psalek", "qwerty"))
                         .param("page", "0")
                         .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))
@@ -81,6 +88,7 @@ public class CourseOfferingControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/sys-admin/course-offerings")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(httpBasic("psalek", "qwerty"))
                         .content("{\"id\": 1, \"capacity\": 20, \"room\": \"R-1\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -97,6 +105,7 @@ public class CourseOfferingControllerTest {
         Mockito.when(courseOfferingService.saveCourseOffering(eq("psalek"), any(CourseOfferingDto.class), anyLong())).thenReturn(courseOfferingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/sys-admin/course-offerings/1")
+                        .with(httpBasic("psalek", "qwerty"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\": 1, \"capacity\": 20, \"room\": \"R-1\"}")
                         .accept(MediaType.APPLICATION_JSON))
@@ -114,6 +123,7 @@ public class CourseOfferingControllerTest {
         Mockito.when(courseOfferingService.deleteCourseOffering(eq("psalek"),1L )).thenReturn(courseOfferingDto);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/sys-admin/course-offerings/1")
+                        .with(httpBasic("psalek", "qwerty"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
