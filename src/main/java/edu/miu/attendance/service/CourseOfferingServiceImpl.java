@@ -73,7 +73,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     @Transactional
-    public CourseOfferingDto saveCourseOffering(CourseOfferingDto courseOfferingDto, Long courseOfferingId) {
+    public CourseOfferingDto saveCourseOffering(String username, CourseOfferingDto courseOfferingDto, Long courseOfferingId) {
         CourseOffering courseOffering;
         if (courseOfferingId != null) {
             courseOffering = courseOfferingRepository.findById(courseOfferingId).orElseThrow(() -> new ResourceNotFoundException("CourseOffering doesn't exit!"));
@@ -100,7 +100,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     @Transactional
-    public CourseOfferingDto deleteCourseOffering(long id) {
+    public CourseOfferingDto deleteCourseOffering(String username,long id) {
         CourseOffering deletedData = courseOfferingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Data doesn't exit!"));
         courseOfferingRepository.deleteById(id);
 

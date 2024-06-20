@@ -14,9 +14,9 @@ public interface CourseOfferingService {
 
     CourseOfferingDto findById(long id);
 
-    CourseOfferingDto saveCourseOffering(CourseOfferingDto courseOfferingDto, Long courseOfferingId);
+    CourseOfferingDto saveCourseOffering(String username,CourseOfferingDto courseOfferingDto, Long courseOfferingId);
 
-    CourseOfferingDto deleteCourseOffering(long id);
+    CourseOfferingDto deleteCourseOffering(String username,long id);
     List<AttendanceRecordExcelDTO> attendanceExcelData(Long id);
     List<CourseOfferingDto> findByDate(String date) ;
     CourseOfferingStudentAttendanceDTO getCourseOfferingAttendanceByStudentId(String studentId, Long courseOfferingId);

@@ -1,7 +1,9 @@
 package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.Course;
+import edu.miu.attendance.domain.CourseOffering;
 import edu.miu.attendance.dto.CourseDTO;
+import edu.miu.attendance.repository.CourseOfferingRepository;
 import edu.miu.attendance.repository.CourseRepository;
 import edu.miu.attendance.utility.MessageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,22 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private CourseOfferingRepository courseOfferingRepository;
+
     MessageUtility messageUtility = new MessageUtility();
 
     public ResponseEntity<?> addCourses(CourseDTO courseDTO) {
         try {
+            Optional<Course> courseByName = courseRepository.findByName(courseDTO.getName().trim());
+            if(courseByName.isPresent()){
+                return  ResponseEntity.ok(messageUtility.validationMessage(courseDTO.getName()));
+            }
+            Optional<Course> courseByCode = courseRepository.findByCode(courseDTO.getCode().trim());
+            if(courseByCode.isPresent()){
+                return  ResponseEntity.ok(messageUtility.codeValidationMessage(courseDTO.getCode()));
+            }
+
             Course course = new Course();
             course.setName(courseDTO.getName());
             course.setCode(courseDTO.getCode());
@@ -35,6 +49,8 @@ public class CourseService {
         return ResponseEntity.ok(HttpStatus.EXPECTATION_FAILED);
         }
     }
+
+
 
     public ResponseEntity<?> getById(Long id) {
         CourseDTO courseDTO = new CourseDTO();
@@ -87,6 +103,19 @@ public class CourseService {
            Optional<Course> courseOpt = courseRepository.findById(courseDTO.getId());
 
            if(courseOpt.isPresent()) {
+               if(!(courseOpt.get().getName().equals(courseDTO.getName().trim()))){
+                   Optional<Course> courseByName = courseRepository.findByName(courseDTO.getName().trim());
+                   if(courseByName.isPresent()) {
+                       return ResponseEntity.ok(messageUtility.validationMessage(courseDTO.getName()));
+                   }
+               }
+               if(!(courseOpt.get().getCode().equals(courseDTO.getCode().trim()))){
+                   Optional<Course> courseByCode = courseRepository.findByCode(courseDTO.getCode().trim());
+                   if(courseByCode.isPresent()){
+                       return  ResponseEntity.ok(messageUtility.codeValidationMessage(courseDTO.getCode()));
+                   }
+               }
+
                Course course = courseOpt.get();
                course.setName(courseDTO.getName());
                course.setCode(courseDTO.getCode());
@@ -95,11 +124,33 @@ public class CourseService {
                course.setDescription(courseDTO.getDescription());
                courseRepository.save(course);
 
+           }else{
+               return ResponseEntity.ok(messageUtility.idNotFoundMessage());
            }
        }  catch (Exception e) {
         return ResponseEntity.ok(HttpStatus.EXPECTATION_FAILED);
      }
         return ResponseEntity.ok(courseDTO);
+    }
+
+    public ResponseEntity<?> deleteCourse(Long courseId) {
+       try {
+           Optional<Course> courseOpt = courseRepository.findById(courseId);
+           if (!courseOpt.isPresent()) {
+               return ResponseEntity.ok(messageUtility.idNotFoundMessage());
+           }
+
+           List<CourseOffering> courseOfferingList = courseOfferingRepository.findByCourse(courseOpt.get());
+           if (!courseOfferingList.isEmpty()) {
+               return ResponseEntity.ok("delete not possible. It has reference");
+           }
+
+           courseRepository.deleteById(courseId);
+           return ResponseEntity.ok(messageUtility.deleteMessage(courseOpt.get().getName()));
+       }  catch (Exception e) {
+        return ResponseEntity.ok(HttpStatus.EXPECTATION_FAILED);
+       }
+
     }
 
 }

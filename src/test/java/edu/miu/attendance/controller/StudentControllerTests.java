@@ -1,6 +1,7 @@
 package edu.miu.attendance.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.miu.attendance.config.TestSecurityConfig;
 import edu.miu.attendance.dto.StudentDTO;
 import edu.miu.attendance.exception.ResourceNotFoundException;
 import edu.miu.attendance.service.StudentService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,10 +19,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(TestSecurityConfig.class)
 class StudentControllerTests {
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +50,6 @@ class StudentControllerTests {
     void testSysAdmin_updateStudent_NotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/sys-admin" +
                                 "/students/12345")
-                        .with(httpBasic("psalek", "qwerty"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(existingStudentDTO)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -57,7 +58,6 @@ class StudentControllerTests {
     @Test
     void testSysAdmin_deleteStudent_NotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/sys-admin/12345")
-                        .with(httpBasic("psalek", "qwerty"))
                 )
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
