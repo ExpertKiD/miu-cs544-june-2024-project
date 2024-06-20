@@ -2,6 +2,7 @@ package edu.miu.attendance.service;
 
 import edu.miu.attendance.domain.AttendanceRecord;
 import edu.miu.attendance.dto.AttendanceRecordDTO;
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import edu.miu.attendance.repository.AttendanceRecordRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private ModelMapper modelMapper;
 
     @Override
-    public Page<AttendanceRecordDTO> getAttendanceRecordsForStudent(Long studentId, Pageable pageable) {
-        Page<AttendanceRecord> attendanceRecords = attendanceRecordRepository.findByStudentId(studentId, pageable);
+    public Page<AttendanceRecordDTO> getAttendanceRecordsForStudent(String studentId, Pageable pageable) {
+        Page<AttendanceRecord> attendanceRecords = attendanceRecordRepository.findAttendanceRecordsByStudentId(studentId, pageable);
 
         return attendanceRecords.map(attendanceRecord -> {
             AttendanceRecordDTO dto = modelMapper.map(attendanceRecord, AttendanceRecordDTO.class);

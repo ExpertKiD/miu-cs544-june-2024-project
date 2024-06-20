@@ -9,5 +9,5 @@ public class CourseOfferingStudentAttendanceDTO {
 
     private List<SessionDto> sessions;
 
-    private List<AttendanceRecordDTO> attendance;
+    private List<AttendanceRecordExcelDTO> attendance;
 }
