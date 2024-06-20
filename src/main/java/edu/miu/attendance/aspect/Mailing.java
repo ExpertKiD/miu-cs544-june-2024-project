@@ -2,7 +2,10 @@ package edu.miu.attendance.aspect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.miu.attendance.domain.Person;
 import edu.miu.attendance.dto.MailingDto;
+import edu.miu.attendance.exception.ResourceNotFoundException;
+import edu.miu.attendance.repository.PersonRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,10 +23,18 @@ public class Mailing {
     @Autowired
     JmsTemplate jmsTemplate;
 
+    @Autowired
+    PersonRepository personRepository;
+
     @Async
     @AfterReturning("execution(* edu.miu.attendance.service.*.save*(..))")
     public void afterSave(JoinPoint joinPoint) throws JsonProcessingException {
-        MailingDto dto=new MailingDto("Saving data", joinPoint.getSignature().getName(), "123","aaa");
+
+        String user = (String) joinPoint.getArgs()[0];
+
+        Person person=personRepository.findPersonByUsername(user).orElseThrow(() -> new ResourceNotFoundException("Data doesn't exit!"));
+
+        MailingDto dto=new MailingDto("Attendance Record System", "Your data is saving successfully in system.", person.getId().toString(),person.getEmailAddress());
         ObjectMapper objectMapper = new ObjectMapper();
         String dtoAsString = objectMapper.writeValueAsString(dto);
         jmsTemplate.convertAndSend("mail-sending",dtoAsString);
@@ -32,7 +43,13 @@ public class Mailing {
     @Async
     @AfterReturning("execution(* edu.miu.attendance.service.*.delete*(..))")
     public void afterDelete(JoinPoint joinPoint) throws JsonProcessingException {
-        MailingDto dto=new MailingDto("Deleting data", joinPoint.getSignature().getName(), "123","aaa");
+
+        String user = (String) joinPoint.getArgs()[0];
+
+        Person person=personRepository.findPersonByUsername(user).orElseThrow(() -> new ResourceNotFoundException("Data doesn't exit!"));
+
+
+        MailingDto dto=new MailingDto("Attendance Record System", "Your data is successfully deleted in system.", person.getId().toString(),person.getEmailAddress());
         ObjectMapper objectMapper = new ObjectMapper();
         String dtoAsString = objectMapper.writeValueAsString(dto);
         jmsTemplate.convertAndSend("mail-sending",dtoAsString);
