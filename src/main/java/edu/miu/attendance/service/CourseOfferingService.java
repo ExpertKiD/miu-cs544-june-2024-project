@@ -1,5 +1,6 @@
 package edu.miu.attendance.service;
 
+import edu.miu.attendance.dto.AttendanceRecordExcelDTO;
 import edu.miu.attendance.dto.CourseOfferingDto;
 import edu.miu.attendance.dto.CourseOfferingStudentAttendanceDTO;
 import org.springframework.data.domain.Page;
@@ -16,8 +17,9 @@ public interface CourseOfferingService {
     CourseOfferingDto saveCourseOffering(CourseOfferingDto courseOfferingDto, Long courseOfferingId);
 
     CourseOfferingDto deleteCourseOffering(long id);
-
+    List<AttendanceRecordExcelDTO> attendanceExcelData(Long id);
+    List<CourseOfferingDto> findByDate(String date) ;
     CourseOfferingStudentAttendanceDTO getCourseOfferingAttendanceByStudentId(String studentId, Long courseOfferingId);
 
-    List<CourseOfferingDto> findByDate(String date);
+
 }
