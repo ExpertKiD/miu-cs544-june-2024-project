@@ -54,7 +54,7 @@ class AttendanceRecordControllerTests {
         List<AttendanceRecordDTO> recordsList = Arrays.asList(record1, record2);
         attendanceRecordsPage = new PageImpl<>(recordsList, PageRequest.of(0, 10), recordsList.size());
 
-        when(attendanceRecordService.getAttendanceRecordsForStudent(1L, PageRequest.of(0, 10)))
+        when(attendanceRecordService.getAttendanceRecordsForStudent("1", PageRequest.of(0, 10)))
                 .thenReturn(attendanceRecordsPage);
     }
 

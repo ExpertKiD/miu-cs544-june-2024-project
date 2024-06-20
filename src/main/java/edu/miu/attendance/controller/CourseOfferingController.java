@@ -69,14 +69,11 @@ public class CourseOfferingController {
             "offeringId") Long courseOfferingId, @AuthenticationPrincipal User currentUser) {
         StudentDTO std =
                 studentService.getStudentByUsername(currentUser.getUsername());
-
-
         CourseOfferingStudentAttendanceDTO attendanceDTO =
                 courseOfferingService.getCourseOfferingAttendanceByStudentId(
                         std.getStudentId(),
                         courseOfferingId
                 );
-
         return ResponseEntity.ok(attendanceDTO);
     }
 
