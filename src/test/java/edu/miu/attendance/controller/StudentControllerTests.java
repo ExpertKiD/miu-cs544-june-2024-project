@@ -2,8 +2,8 @@ package edu.miu.attendance.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.attendance.dto.StudentDTO;
-import edu.miu.attendance.service.StudentService;
 import edu.miu.attendance.exception.ResourceNotFoundException;
+import edu.miu.attendance.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,7 +46,9 @@ class StudentControllerTests {
 
     @Test
     void testSysAdmin_updateStudent_NotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/sys-admin/students/12345")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/sys-admin" +
+                                "/students/12345")
+                        .with(httpBasic("psalek", "qwerty"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(existingStudentDTO)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -52,7 +56,9 @@ class StudentControllerTests {
 
     @Test
     void testSysAdmin_deleteStudent_NotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/sys-admin/12345"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/sys-admin/12345")
+                        .with(httpBasic("psalek", "qwerty"))
+                )
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }
